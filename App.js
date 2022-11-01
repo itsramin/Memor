@@ -12,31 +12,45 @@ import Colors from "./constants/colors";
 import EndGame from "./screens/EndScreen";
 import GameScreen from "./screens/GameScreen";
 import StartScreen from "./screens/StartScreen";
-import AppLoading from "expo-app-loading";
+// import { AppLoading } from "expo-app-loading";
 
 export default function App() {
   const [num, setNum] = useState(null);
-  const [gameOver, setGameOvre] = useState(true);
+  const [gameOver, setGameOver] = useState(true);
+  const [round, setRound] = useState(null);
   const [fontsloaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
-  if (!fontsloaded) {
-    return <AppLoading />;
-  }
+  // if (!fontsloaded) {
+  //   return <AppLoading />;
+  // }
 
   const setNumHandler = (value) => {
     setNum(value);
-    setGameOvre(false);
+    setGameOver(false);
   };
-  const gameOverHandler = () => {
-    setGameOvre(true);
+  const gameOverHandler = (roundNum) => {
+    setGameOver(true);
+    setRound(roundNum);
+  };
+  const startNewGameHandler = () => {
+    setNum(null);
+    setRound(null);
+    setGameOver(true);
   };
 
   let screen = <StartScreen onSetNum={setNumHandler} />;
 
-  if (gameOver && num) screen = <EndGame />;
+  if (gameOver && num)
+    screen = (
+      <EndGame
+        answer={num}
+        onStartNewGame={startNewGameHandler}
+        roundsNum={round}
+      />
+    );
   if (!gameOver && num)
     screen = <GameScreen answer={num} gameOver={gameOverHandler} />;
   return (

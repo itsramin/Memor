@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  FlatList,
+} from "react-native";
 import PrimaryButton from "../Components/PrimaryButton";
 import Title from "../Components/Title";
 import Colors from "../constants/colors";
@@ -20,14 +27,21 @@ const randomize = (min, max, exclude) => {
 
 let minVal = 1;
 let maxVal = 100;
+let round = 0;
 
 const GameScreen = ({ answer, gameOver }) => {
   const initGuess = randomize(1, 100, answer);
   const [curGuess, setCurGuess] = useState(initGuess);
+  const [guesses, setGuesses] = useState([
+    { key: initGuess, guess: initGuess },
+  ]);
 
   useEffect(() => {
     if (curGuess === +answer) {
-      gameOver();
+      minVal = 1;
+      maxVal = 100;
+      gameOver(round);
+      round = 0;
     }
   }, [curGuess, answer, gameOver]);
 
@@ -45,6 +59,16 @@ const GameScreen = ({ answer, gameOver }) => {
     }
     const newRand = randomize(minVal, maxVal, curGuess);
     setCurGuess(newRand);
+    setGuesses((prev) => [{ key: newRand, guess: newRand }, ...prev]);
+    round++;
+  };
+
+  const renderGuess = ({ item }) => {
+    return (
+      <View style={styles.guessListView}>
+        <Text style={styles.guessListText}>{item.guess}</Text>
+      </View>
+    );
   };
 
   return (
@@ -74,6 +98,7 @@ const GameScreen = ({ answer, gameOver }) => {
           </View>
         </View>
       </View>
+      <FlatList data={guesses} renderItem={renderGuess} />
     </View>
   );
 };
@@ -112,6 +137,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: 20,
     marginHorizontal: 60,
+    marginVertical: 10,
   },
   questionText: {
     color: Colors.second500,
@@ -122,4 +148,13 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", marginVertical: 16 },
   btn: { marginHorizontal: 8, flex: 1 },
   btnText: { fontSize: 25 },
+  guessListView: {
+    backgroundColor: Colors.primary300,
+    padding: 16,
+    borderRadius: 10,
+    marginVertical: 5,
+  },
+  guessListText: {
+    color: Colors.second500,
+  },
 });
