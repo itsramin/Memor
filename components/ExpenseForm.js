@@ -69,6 +69,7 @@ const ExpenseForm = ({ curKey }) => {
         value={title}
         onChangeText={titleChangeHandler}
         style={styles.title}
+        autoCorrect={false}
         selectionColor="#0c266d"
       />
       <TextInput
