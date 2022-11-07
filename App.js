@@ -7,6 +7,11 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AllColors } from "./UI/AllColors";
+import SetOverviewScreen from "./screens/SetOverviewScreen";
+import ViewScreen from "./screens/ViewScreen";
+import MemorizeScreen from "./screens/MemorizeScreen";
+import EditScreen from "./screens/EditScreen";
 
 const Stack = createNativeStackNavigator();
 // const BottomTab = createBottomTabNavigator();
@@ -19,29 +24,17 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
-              headerStyle: { backgroundColor: "#0c266d" },
+              headerStyle: { backgroundColor: AllColors.primary500 },
               headerTintColor: "white",
               headerTitleStyle: "bold",
-              contentStyle: { backgroundColor: "#163a9e" },
+              contentStyle: { padding: 16 },
             }}
           >
-            {/* <Stack.Screen
-              name="home"
-              component={HomePage}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="new"
-              component={AddExpenseScreen}
-              options={{ title: "New Expense" }}
-            />
-            <Stack.Screen
-              name="edit"
-              component={ExpenseDetailScreen}
-              options={{ title: "Edit" }}
-            /> */}
+            <Stack.Screen name="home" component={HomeScreen} />
+            <Stack.Screen name="setOverview" component={SetOverviewScreen} />
+            <Stack.Screen name="viewCards" component={ViewScreen} />
+            <Stack.Screen name="memorizeScreen" component={MemorizeScreen} />
+            <Stack.Screen name="editScreen" component={EditScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

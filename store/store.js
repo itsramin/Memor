@@ -1,5 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import expensesSlice from "./expensesSlice";
+import sets from "./sets";
 
-const store = configureStore({ reducer: { expenses: expensesSlice } });
+const store = configureStore({
+  reducer: { sets: sets },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
 export default store;
