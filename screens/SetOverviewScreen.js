@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TextInput, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../UI/PrimaryButton";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,27 +9,34 @@ import { setsActions } from "../store/sets";
 const SetOverviewScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const curSetId = route.params.setId;
-
+  const shuffle = useSelector((state) => state.sets.shuffle);
   const allSets = useSelector((state) => state.sets.allSets);
+  const [nameIsEditing, setNameIsEditing] = useState(false);
 
   const targetSet = allSets.find((item) => item.setId === curSetId);
-  const shuffle = targetSet.shuffle;
+  const minStage = targetSet.cards.reduce((min, cur) => {
+    if (cur.stage < min) min = cur.stage;
+    return min;
+  }, 5);
+  const allCards = targetSet.cards.filter((card) => card.stage === minStage);
+
+  const cards = shuffle ? shuffleArr(allCards) : allCards;
+
   useLayoutEffect(() => {
     navigation.setOptions({ title: targetSet.name });
   }, []);
-
-  const changeShuffleHandler = () => {
-    dispatch(setsActions.changeShuffle({ setId: curSetId }));
-  };
 
   const viewHandler = () => {
     navigation.navigate("viewCards", { setId: curSetId });
   };
   const memorizeHandler = () => {
-    navigation.navigate("memorizeScreen", { setId: curSetId });
+    navigation.navigate("memorizeScreen", { setId: curSetId, cards, minStage });
   };
   const addHandler = () => {
     navigation.navigate("cardFormScreen", { setId: curSetId, mode: "new" });
+  };
+  const resetHandler = () => {
+    dispatch(setsActions.resetStage(curSetId));
   };
 
   const stageCounter = (cards, stage) => {
@@ -41,10 +48,58 @@ const SetOverviewScreen = ({ route, navigation }) => {
     return num;
   };
 
+  const fullMemorize = targetSet.cards.reduce((sum, cur) => {
+    if (cur.fullMemorize) ++sum;
+    return sum;
+  }, 0);
+  const [newName, setNewName] = useState(targetSet.name);
+  const nameIconHandler = () => {
+    setNameIsEditing(true);
+  };
+  const nameChangeHandler = (value) => {
+    setNewName(value);
+  };
+  const blurHandler = () => {
+    setNameIsEditing(false);
+    dispatch(setsActions.changeSetName({ setId: curSetId, newName }));
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.infoBox}>
-        <Text style={styles.infoTitle}>Set info</Text>
+        <View style={styles.row}>
+          {!nameIsEditing && (
+            <>
+              <Text style={styles.infoTitle}>{targetSet.name}</Text>
+              <Ionicons
+                name="brush"
+                color={AllColors.grey200}
+                size={20}
+                onPress={nameIconHandler}
+                style={styles.editIcon}
+              />
+            </>
+          )}
+          {nameIsEditing && (
+            <>
+              <TextInput
+                style={styles.infoTitle}
+                defaultValue={targetSet.name}
+                onChangeText={nameChangeHandler}
+                onBlur={blurHandler}
+                autoFocus
+              />
+
+              <Ionicons
+                name="checkmark-circle"
+                color={AllColors.grey200}
+                size={20}
+                onPress={blurHandler}
+                style={styles.checkIcon}
+              />
+            </>
+          )}
+        </View>
         <View>
           <View style={styles.infoRow}>
             <Text>All Cards</Text>
@@ -66,11 +121,20 @@ const SetOverviewScreen = ({ route, navigation }) => {
             <Text>Stage 4</Text>
             <Text>{stageCounter(targetSet.cards, 4)}</Text>
           </View>
+          <View style={styles.infoRow}>
+            <Text>Full Memorize</Text>
+            <Text>{fullMemorize}</Text>
+          </View>
         </View>
       </View>
       <PrimaryButton title="Add new card" onPress={addHandler} />
       <PrimaryButton title="View" onPress={viewHandler} />
       <PrimaryButton title="Memorize" onPress={memorizeHandler} />
+      <PrimaryButton
+        title="Reset stages"
+        onPress={resetHandler}
+        bgcolor={AllColors.red400}
+      />
     </View>
   );
 };
@@ -80,7 +144,8 @@ const styles = StyleSheet.create({
   // screen: { alignItems: "center" },
   row: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "baseline",
+    justifyContent: "center",
   },
   btn: {
     flex: 1,
@@ -109,5 +174,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 4,
+  },
+  editIcon: {
+    marginHorizontal: 5,
+  },
+  checkIcon: {
+    marginHorizontal: 5,
+    marginTop: 8,
+    alignSelf: "flex-start",
   },
 });

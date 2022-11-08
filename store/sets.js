@@ -17,6 +17,7 @@ const sets = createSlice({
             cardId: "car1",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q2?",
@@ -24,6 +25,7 @@ const sets = createSlice({
             cardId: "car2",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q3?",
@@ -31,6 +33,7 @@ const sets = createSlice({
             cardId: "car3",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q1 set2?",
@@ -38,6 +41,7 @@ const sets = createSlice({
             cardId: "car4",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q2 set2?",
@@ -45,6 +49,7 @@ const sets = createSlice({
             cardId: "car5",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q3 set2?",
@@ -52,6 +57,7 @@ const sets = createSlice({
             cardId: "car6",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
         ],
       },
@@ -66,6 +72,7 @@ const sets = createSlice({
             cardId: "car4",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q2 set2?",
@@ -73,6 +80,7 @@ const sets = createSlice({
             cardId: "car5",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
           {
             question: "q3 set2?",
@@ -80,6 +88,7 @@ const sets = createSlice({
             cardId: "car6",
             nextReview: "",
             stage: 1,
+            fullMemorize: false,
           },
         ],
       },
@@ -141,7 +150,48 @@ const sets = createSlice({
         (card) => card.cardId === action.payload.cardId
       );
 
+      if (targetCard.fullMemorize === true) return;
+
+      if (targetCard.stage > 3) {
+        targetCard.fullMemorize = true;
+      }
       ++targetCard.stage;
+    },
+    resetStage(state, action) {
+      const targetSet = state.allSets.find(
+        (set) => set.setId === action.payload
+      );
+
+      targetSet.cards.forEach((card) => {
+        card.stage = 1;
+        card.fullMemorize = false;
+        card.nextReview = "";
+      });
+    },
+    changeSetName(state, action) {
+      const targetSet = state.allSets.find(
+        (set) => set.setId === action.payload.setId
+      );
+      targetSet.name = action.payload.newName;
+    },
+    addSet(state, action) {
+      const newSetId = `s${+new Date()}${Math.floor(Math.random() * 1000)}`;
+      state.allSets.push({
+        setId: newSetId,
+        name: action.payload.name,
+        cards: [],
+      });
+      const targetSet = state.allSets.find((set) => set.setId === newSetId);
+      action.payload.cards.forEach((card) => {
+        targetSet.cards.push({
+          question: card.question,
+          answer: card.answer,
+          cardId: `c${+new Date()}${Math.floor(Math.random() * 1000)}`,
+          nextReview: "",
+          stage: 1,
+          fullMemorize: false,
+        });
+      });
     },
   },
 });

@@ -6,14 +6,17 @@ import { shuffleArr } from "../helper/shuffle";
 import { setsActions } from "../store/sets";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
+import ProgressBar from "../UI/ProgressBar";
 
 const MemorizeScreen = ({ route, navigation }) => {
   const curSetId = route.params.setId;
+  const { cards, minStage } = route.params;
   const dispatch = useDispatch();
   const allSets = useSelector((state) => state.sets.allSets);
 
   const targetSet = allSets.find((item) => item.setId === curSetId);
-  const shuffle = useSelector((state) => state.sets.shuffle);
+  // const shuffle = useSelector((state) => state.sets.shuffle);
+  // console.log(shuffle);
 
   const [cardNum, setCardNum] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -28,50 +31,61 @@ const MemorizeScreen = ({ route, navigation }) => {
     });
   }, []);
 
-  const btnHandler = (status) => {
-    status === "no"
-      ? setWrongNum((prev) => prev + 1)
-      : setCorrectNum((prev) => prev + 1);
-
-    if (cardNum === targetSet.cards.length - 1) {
-      setCardsOver(true);
-      return;
-    }
-    setCardNum((prev) => prev + 1);
-    let daysCount = 2;
-    if (status === "easy") daysCount = 4;
-    if (status === "very easy") daysCount = 6;
-
-    dispatch(
-      setsActions.changeDate({
-        days: daysCount,
-        setId: curSetId,
-        cardId: targetSet.cards[cardNum].cardId,
-      })
-    );
-    if (status !== "no")
-      dispatch(
-        setsActions.changeStage({
-          setId: curSetId,
-          cardId: targetSet.cards[cardNum].cardId,
-        })
-      );
-  };
-
   const qaBoxHandler = () => {
     setShowAnswer((prev) => !prev);
   };
   const backHandler = () => {
     navigation.goBack();
   };
-  const setCards = [...targetSet.cards];
 
-  const cards = shuffle ? shuffleArr(setCards) : setCards;
+  // const minStage = targetSet.cards.reduce((min, cur) => {
+  //   if (cur.stage < min) min = cur.stage;
+  //   return min;
+  // }, 4);
+
+  // console.log(minStage);
+  // const allCards = targetSet.cards.filter((card) => card.stage === minStage);
+
+  // const cards = shuffle ? shuffleArr(allCards) : allCards;
+  // console.log(cards.length);
+  // const [cards, setCards] = useState(initCards);
 
   const card = cards[cardNum];
+  const btnHandler = (status) => {
+    status === "no"
+      ? setWrongNum((prev) => prev + 1)
+      : setCorrectNum((prev) => prev + 1);
+
+    let daysCount = 2;
+    if (status === "easy") daysCount = 4;
+    if (status === "very easy") daysCount = 6;
+
+    if (status !== "no") {
+      // dispatch(
+      //   setsActions.changeDate({
+      //     days: daysCount,
+      //     setId: curSetId,
+      //     cardId: cards[cardNum].cardId,
+      //   })
+      // );
+      dispatch(
+        setsActions.changeStage({
+          setId: curSetId,
+          cardId: cards[cardNum].cardId,
+        })
+      );
+    }
+
+    if (cardNum === cards.length - 1) {
+      return setCardsOver(true);
+    }
+
+    setCardNum((prev) => prev + 1);
+  };
 
   let content = (
     <View>
+      <ProgressBar progress={(cardNum + 1) / cards.length} />
       <Pressable style={styles.qaView} onPress={qaBoxHandler}>
         {!showAnswer ? (
           <Text style={styles.text}>{card.question}</Text>
@@ -109,6 +123,7 @@ const MemorizeScreen = ({ route, navigation }) => {
         correctNum={correctNum}
         wrongNum={wrongNum}
         onPress={backHandler}
+        stage={minStage}
       />
     );
   }
