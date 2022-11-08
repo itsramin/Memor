@@ -15,11 +15,12 @@ const ViewScreen = ({ route, navigation }) => {
 
   const renderItemHandler = (itemData) => {
     const cardPressHandler = () => {
-      navigation.navigate("editScreen", {
+      navigation.navigate("cardFormScreen", {
         question: itemData.item.question,
         answer: itemData.item.answer,
         setId: curSetId,
         cardId: itemData.item.cardId,
+        mode: "edit",
       });
     };
     return (

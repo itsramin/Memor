@@ -11,7 +11,10 @@ import { AllColors } from "./UI/AllColors";
 import SetOverviewScreen from "./screens/SetOverviewScreen";
 import ViewScreen from "./screens/ViewScreen";
 import MemorizeScreen from "./screens/MemorizeScreen";
-import EditScreen from "./screens/EditScreen";
+import CardFormScreen from "./screens/CardFormScreen";
+import AddScreen from "./screens/AddScreen";
+import SettingIcon from "./UI/SettingIcon";
+import SettingsScreen from "./screens/SettingsScreem";
 
 const Stack = createNativeStackNavigator();
 // const BottomTab = createBottomTabNavigator();
@@ -28,13 +31,15 @@ export default function App() {
               headerTintColor: "white",
               headerTitleStyle: "bold",
               contentStyle: { padding: 16 },
+              headerRight: () => <SettingIcon />,
             }}
           >
             <Stack.Screen name="home" component={HomeScreen} />
             <Stack.Screen name="setOverview" component={SetOverviewScreen} />
             <Stack.Screen name="viewCards" component={ViewScreen} />
             <Stack.Screen name="memorizeScreen" component={MemorizeScreen} />
-            <Stack.Screen name="editScreen" component={EditScreen} />
+            <Stack.Screen name="cardFormScreen" component={CardFormScreen} />
+            <Stack.Screen name="settings" component={SettingsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

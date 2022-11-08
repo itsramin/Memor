@@ -1,9 +1,9 @@
 import { Text, View, StyleSheet } from "react-native";
 import PrimaryButton from "../UI/PrimaryButton";
 
-const SummaryInfo = ({ correctNum, wrongNum, onPress }) => {
+const MemorizeSummary = ({ correctNum, wrongNum, onPress }) => {
   return (
-    <View>
+    <View style={styles.screen}>
       <Text>Summary</Text>
       <View style={styles.summaryRow}>
         <Text>Corrects: </Text>
@@ -18,8 +18,9 @@ const SummaryInfo = ({ correctNum, wrongNum, onPress }) => {
   );
 };
 
-export default SummaryInfo;
+export default MemorizeSummary;
 const styles = StyleSheet.create({
+  screen: { textAlign: "center" },
   summaryRow: {
     flexDirection: "row",
   },
