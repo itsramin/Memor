@@ -15,6 +15,7 @@ import CardFormScreen from "./screens/CardFormScreen";
 import AddScreen from "./screens/AddScreen";
 import SettingIcon from "./UI/SettingIcon";
 import SettingsScreen from "./screens/SettingsScreem";
+import NewSetForm from "./screens/NewSetForm";
 
 const Stack = createNativeStackNavigator();
 // const BottomTab = createBottomTabNavigator();
@@ -40,6 +41,7 @@ export default function App() {
             <Stack.Screen name="memorizeScreen" component={MemorizeScreen} />
             <Stack.Screen name="cardFormScreen" component={CardFormScreen} />
             <Stack.Screen name="settings" component={SettingsScreen} />
+            <Stack.Screen name="newSetForm" component={NewSetForm} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
