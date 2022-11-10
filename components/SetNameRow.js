@@ -12,7 +12,7 @@ const SetNameRow = ({ name, onPress }) => {
 export default SetNameRow;
 const styles = StyleSheet.create({
   view: {
-    backgroundColor: AllColors.primary500,
+    backgroundColor: AllColors.primary400,
     padding: 16,
     marginVertical: 8,
     borderRadius: 6,

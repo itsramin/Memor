@@ -1,10 +1,11 @@
 import { useLayoutEffect, useState } from "react";
-import { View, StyleSheet, Text, TextInput, ScrollView } from "react-native";
+import { View, StyleSheet, Text, TextInput, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../UI/PrimaryButton";
 import { Ionicons } from "@expo/vector-icons";
 import { AllColors } from "../UI/AllColors";
 import { setsActions } from "../store/sets";
+import { shuffleArr } from "../helper/shuffle";
 
 const SetOverviewScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -14,11 +15,12 @@ const SetOverviewScreen = ({ route, navigation }) => {
   const [nameIsEditing, setNameIsEditing] = useState(false);
 
   const targetSet = allSets.find((item) => item.setId === curSetId);
-  const minStage = targetSet.cards.reduce((min, cur) => {
+  const targetCards = targetSet.cards;
+  const minStage = targetCards.reduce((min, cur) => {
     if (cur.stage < min) min = cur.stage;
     return min;
   }, 5);
-  const allCards = targetSet.cards.filter((card) => card.stage === minStage);
+  const allCards = targetCards.filter((card) => card.stage === minStage);
 
   const cards = shuffle ? shuffleArr(allCards) : allCards;
 
@@ -38,6 +40,22 @@ const SetOverviewScreen = ({ route, navigation }) => {
   const resetHandler = () => {
     dispatch(setsActions.resetStage(curSetId));
   };
+  const deleteSetHandler = () => {
+    Alert.alert(
+      "Delete Set",
+      "Are you sure you want to delete this set? All cards will be deleted!",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: () => {
+            navigation.goBack();
+            dispatch(setsActions.deleteSet(curSetId));
+          },
+        },
+      ]
+    );
+  };
 
   const stageCounter = (cards, stage) => {
     const num = cards.reduce((sum, cur) => {
@@ -48,7 +66,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
     return num;
   };
 
-  const fullMemorize = targetSet.cards.reduce((sum, cur) => {
+  const fullMemorize = targetCards.reduce((sum, cur) => {
     if (cur.fullMemorize) ++sum;
     return sum;
   }, 0);
@@ -102,46 +120,73 @@ const SetOverviewScreen = ({ route, navigation }) => {
         </View>
         <View>
           <View style={styles.infoRow}>
-            <Text>All Cards</Text>
-            <Text>{targetSet.cards.length}</Text>
+            <Text style={styles.infoText}>All Cards</Text>
+            <Text style={styles.infoText}>{targetCards.length}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Stage 1</Text>
-            <Text>{stageCounter(targetSet.cards, 1)}</Text>
+            <Text style={styles.infoText}>Stage 1</Text>
+            <Text style={styles.infoText}>{stageCounter(targetCards, 1)}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Stage 2</Text>
-            <Text>{stageCounter(targetSet.cards, 2)}</Text>
+            <Text style={styles.infoText}>Stage 2</Text>
+            <Text style={styles.infoText}>{stageCounter(targetCards, 2)}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Stage 3</Text>
-            <Text>{stageCounter(targetSet.cards, 3)}</Text>
+            <Text style={styles.infoText}>Stage 3</Text>
+            <Text style={styles.infoText}>{stageCounter(targetCards, 3)}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Stage 4</Text>
-            <Text>{stageCounter(targetSet.cards, 4)}</Text>
+            <Text style={styles.infoText}>Stage 4</Text>
+            <Text style={styles.infoText}>{stageCounter(targetCards, 4)}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Full Memorize</Text>
-            <Text>{fullMemorize}</Text>
+            <Text style={styles.infoText}>Full Memorize</Text>
+            <Text style={styles.infoText}>{fullMemorize}</Text>
           </View>
         </View>
       </View>
-      <PrimaryButton title="Add new card" onPress={addHandler} />
-      <PrimaryButton title="View" onPress={viewHandler} />
-      <PrimaryButton title="Memorize" onPress={memorizeHandler} />
-      <PrimaryButton
-        title="Reset stages"
-        onPress={resetHandler}
-        bgcolor={AllColors.red400}
-      />
+      <View style={styles.buttons}>
+        <PrimaryButton
+          title="Add new card"
+          onPress={addHandler}
+          icon="add-circle"
+        />
+        {targetCards.length !== 0 && (
+          <PrimaryButton
+            title="View & edit cards"
+            onPress={viewHandler}
+            icon="eye"
+          />
+        )}
+        {targetCards.length !== 0 && (
+          <PrimaryButton
+            title="Memorize"
+            onPress={memorizeHandler}
+            icon="game-controller"
+          />
+        )}
+        {targetCards.length !== 0 &&
+          targetCards.length !== stageCounter(targetCards, 1) && (
+            <PrimaryButton
+              title="Reset stages"
+              onPress={resetHandler}
+              bgcolor={AllColors.red400}
+              icon="repeat"
+            />
+          )}
+        <PrimaryButton
+          title="Delete Set"
+          onPress={deleteSetHandler}
+          bgcolor={AllColors.red400}
+          icon="trash"
+        />
+      </View>
     </View>
   );
 };
 
 export default SetOverviewScreen;
 const styles = StyleSheet.create({
-  // screen: { alignItems: "center" },
   row: {
     flexDirection: "row",
     alignItems: "baseline",
@@ -182,5 +227,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginTop: 8,
     alignSelf: "flex-start",
+  },
+  buttons: {
+    marginHorizontal: 50,
+  },
+  infoText: {
+    color: AllColors.primary400,
   },
 });

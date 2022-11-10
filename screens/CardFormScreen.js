@@ -1,5 +1,4 @@
 import { TextInput, Text, View, StyleSheet } from "react-native";
-
 import { AllColors } from "../UI/AllColors";
 import { Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "../UI/PrimaryButton";
@@ -43,7 +42,8 @@ const CardFormScreen = ({ route, navigation }) => {
     );
     navigation.goBack();
   };
-  const updateCardHandler = () => {
+
+  const saveHandler = (status) => {
     if (questionInvalid || answerInvalid) {
       setAnswerTouched(true);
       setQuestionTouched(true);
@@ -72,30 +72,14 @@ const CardFormScreen = ({ route, navigation }) => {
         })
       );
     }
-
-    navigation.goBack();
-  };
-  const saveStayHandler = () => {
-    if (questionInvalid || answerInvalid) {
-      setAnswerTouched(true);
-      setQuestionTouched(true);
-      return;
+    if (status === "stay") {
+      setAnswerTouched(false);
+      setQuestionTouched(false);
+      setQuestion("");
+      setAnswer("");
+    } else {
+      navigation.goBack();
     }
-    dispatch(
-      setsActions.addCard({
-        setId,
-
-        cardData: {
-          answer,
-          question,
-          newtReview: "",
-          cardId: `${+new Date()}${Math.floor(Math.random() * 1000)}`,
-        },
-      })
-    );
-
-    setQuestion("");
-    setAnswer("");
   };
 
   useLayoutEffect(() => {
@@ -158,20 +142,20 @@ const CardFormScreen = ({ route, navigation }) => {
         {mode === "new" && (
           <PrimaryButton
             title="Save & Stay"
-            onPress={saveStayHandler}
+            onPress={saveHandler.bind(this, "stay")}
             style={styles.btn}
           />
         )}
         <PrimaryButton
           title="Save"
-          onPress={updateCardHandler}
+          onPress={saveHandler.bind(this, "back")}
           style={styles.btn}
         />
         <PrimaryButton
           title="Cancel"
           onPress={cancelHandler}
           bgcolor={AllColors.primary100}
-          textColor={AllColors.primary400}
+          textColor={AllColors.primary500}
           style={styles.btn}
         />
       </View>

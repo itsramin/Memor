@@ -1,6 +1,6 @@
 import { useLayoutEffect } from "react";
 import { FlatList, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import CardItem from "../components/CardItem";
 
 const ViewScreen = ({ route, navigation }) => {

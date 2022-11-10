@@ -176,22 +176,17 @@ const sets = createSlice({
     },
     addSet(state, action) {
       const newSetId = `s${+new Date()}${Math.floor(Math.random() * 1000)}`;
-      state.allSets.push({
+      state.allSets.unshift({
         setId: newSetId,
         name: action.payload.name,
         cards: [],
       });
-      const targetSet = state.allSets.find((set) => set.setId === newSetId);
-      action.payload.cards.forEach((card) => {
-        targetSet.cards.push({
-          question: card.question,
-          answer: card.answer,
-          cardId: `c${+new Date()}${Math.floor(Math.random() * 1000)}`,
-          nextReview: "",
-          stage: 1,
-          fullMemorize: false,
-        });
-      });
+    },
+    deleteSet(state, action) {
+      const targetSetIndex = state.allSets.findIndex(
+        (set) => set.setId === action.payload
+      );
+      state.allSets.splice(targetSetIndex, 1);
     },
   },
 });

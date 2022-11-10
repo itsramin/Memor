@@ -16,9 +16,8 @@ const styles = StyleSheet.create({
     backgroundColor: AllColors.grey100,
     overflow: "hidden",
     marginVertical: 10,
-    marginBottom: 20,
+
     height: 10,
-    marginHorizontal: 20,
   },
   inner: {
     backgroundColor: AllColors.green400,

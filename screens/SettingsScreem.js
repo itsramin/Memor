@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useLayoutEffect } from "react";
 import { View, StyleSheet, Text, Switch } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setsActions } from "../store/sets";
 import { AllColors } from "../UI/AllColors";
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const shuffle = useSelector((state) => state.sets.shuffle);
-
-  //   const [shuffle, setShuffle] = useState(initShuffle);
-
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerRight: () => {} });
+  }, []);
   const changeShuffleHandler = () => {
     dispatch(setsActions.changeShuffle(!shuffle));
   };
@@ -18,11 +18,11 @@ const SettingsScreen = () => {
   return (
     <View>
       <View style={styles.optionRow}>
-        <Text>Shuffle cards</Text>
+        <Text style={styles.optionText}>Shuffle cards</Text>
         <Switch
           value={shuffle}
           onValueChange={changeShuffleHandler}
-          trackColor={{ true: AllColors.primary200, false: AllColors.grey100 }}
+          trackColor={{ true: AllColors.primary300, false: AllColors.grey100 }}
           thumbColor={shuffle ? AllColors.primary400 : AllColors.grey400}
         />
       </View>
@@ -34,8 +34,15 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   screen: { textAlign: "center" },
   optionRow: {
+    paddingVertical: 5,
+    paddingHorizontal: 6,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    borderBottomColor: AllColors.primary300,
+    borderBottomWidth: 1,
+  },
+  optionText: {
+    color: AllColors.primary500,
   },
 });

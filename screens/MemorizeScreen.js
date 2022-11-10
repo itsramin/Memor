@@ -2,11 +2,11 @@ import { useLayoutEffect, useState } from "react";
 import { View, StyleSheet, Text, Pressable } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import MemorizeSummary from "../components/MemorizeSummary";
-import { shuffleArr } from "../helper/shuffle";
 import { setsActions } from "../store/sets";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 import ProgressBar from "../UI/ProgressBar";
+import { Ionicons } from "@expo/vector-icons";
 
 const MemorizeScreen = ({ route, navigation }) => {
   const curSetId = route.params.setId;
@@ -15,8 +15,6 @@ const MemorizeScreen = ({ route, navigation }) => {
   const allSets = useSelector((state) => state.sets.allSets);
 
   const targetSet = allSets.find((item) => item.setId === curSetId);
-  // const shuffle = useSelector((state) => state.sets.shuffle);
-  // console.log(shuffle);
 
   const [cardNum, setCardNum] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -38,27 +36,15 @@ const MemorizeScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
 
-  // const minStage = targetSet.cards.reduce((min, cur) => {
-  //   if (cur.stage < min) min = cur.stage;
-  //   return min;
-  // }, 4);
-
-  // console.log(minStage);
-  // const allCards = targetSet.cards.filter((card) => card.stage === minStage);
-
-  // const cards = shuffle ? shuffleArr(allCards) : allCards;
-  // console.log(cards.length);
-  // const [cards, setCards] = useState(initCards);
-
   const card = cards[cardNum];
   const btnHandler = (status) => {
     status === "no"
       ? setWrongNum((prev) => prev + 1)
       : setCorrectNum((prev) => prev + 1);
 
-    let daysCount = 2;
-    if (status === "easy") daysCount = 4;
-    if (status === "very easy") daysCount = 6;
+    // let daysCount = 2;
+    // if (status === "easy") daysCount = 4;
+    // if (status === "very easy") daysCount = 6;
 
     if (status !== "no") {
       // dispatch(
@@ -84,8 +70,13 @@ const MemorizeScreen = ({ route, navigation }) => {
   };
 
   let content = (
-    <View>
-      <ProgressBar progress={(cardNum + 1) / cards.length} />
+    <View style={styles.screen}>
+      <View>
+        <ProgressBar progress={(cardNum + 1) / cards.length} />
+        <Text style={styles.progressText}>
+          {cardNum + 1} of {cards.length}
+        </Text>
+      </View>
       <Pressable style={styles.qaView} onPress={qaBoxHandler}>
         {!showAnswer ? (
           <Text style={styles.text}>{card.question}</Text>
@@ -94,12 +85,8 @@ const MemorizeScreen = ({ route, navigation }) => {
         )}
       </Pressable>
 
-      <PrimaryButton
-        title="Very easy"
-        onPress={btnHandler.bind(this, "very easy")}
-        bgcolor={AllColors.green500}
-      />
-      <PrimaryButton
+      <View style={styles.actions}>
+        {/* <PrimaryButton
         title="Easy"
         onPress={btnHandler.bind(this, "easy")}
         bgcolor={AllColors.green400}
@@ -108,12 +95,26 @@ const MemorizeScreen = ({ route, navigation }) => {
         title="Normal"
         onPress={btnHandler.bind(this, "normal")}
         bgcolor={AllColors.green300}
-      />
-      <PrimaryButton
-        title="I don't know"
-        onPress={btnHandler.bind(this, "no")}
-        bgcolor={AllColors.red500}
-      />
+      /> */}
+        <PrimaryButton
+          title={
+            <Ionicons name="close-circle" color={AllColors.red400} size={40} />
+          }
+          onPress={btnHandler.bind(this, "no")}
+          bgcolor="transparent"
+        />
+        <PrimaryButton
+          title={
+            <Ionicons
+              name="checkmark-circle"
+              color={AllColors.green400}
+              size={40}
+            />
+          }
+          onPress={btnHandler.bind(this, "very easy")}
+          bgcolor="transparent"
+        />
+      </View>
     </View>
   );
 
@@ -132,10 +133,11 @@ const MemorizeScreen = ({ route, navigation }) => {
 
 export default MemorizeScreen;
 const styles = StyleSheet.create({
+  screen: { flex: 1, justifyContent: "space-between" },
   qaView: {
     padding: 16,
-    // backgroundColor: AllColors.primary300,
-    borderColor: AllColors.primary300,
+    borderColor: AllColors.primary400,
+    backgroundColor: AllColors.primary100,
     borderWidth: 2,
     borderRadius: 6,
     marginBottom: 16,
@@ -143,8 +145,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    color: AllColors.primary300,
+    color: AllColors.primary500,
     textAlign: "center",
     fontSize: 24,
+  },
+  actions: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  progressText: {
+    textAlign: "center",
   },
 });

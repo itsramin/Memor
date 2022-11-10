@@ -4,7 +4,7 @@ import PrimaryButton from "../UI/PrimaryButton";
 const MemorizeSummary = ({ correctNum, wrongNum, onPress, stage }) => {
   return (
     <View style={styles.screen}>
-      <Text>Summary</Text>
+      <Text>Memorize summary</Text>
       <View style={styles.summaryRow}>
         {wrongNum === 0 && <Text>Stage {stage} complete!</Text>}
       </View>
@@ -16,7 +16,7 @@ const MemorizeSummary = ({ correctNum, wrongNum, onPress, stage }) => {
         <Text>Wrongs; </Text>
         <Text>{wrongNum}</Text>
       </View>
-      <PrimaryButton title="Back" onPress={onPress} />
+      <PrimaryButton title="Back" onPress={onPress} icon="chevron-back" />
     </View>
   );
 };

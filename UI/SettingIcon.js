@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 const SettingIcon = () => {
   const navigation = useNavigation();
   const pressHandler = () => {
-    navigation.navigate("settings");
+    navigation.navigate("Settings");
   };
 
   return (
