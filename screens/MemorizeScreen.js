@@ -6,7 +6,7 @@ import { setsActions } from "../store/sets";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 import ProgressBar from "../UI/ProgressBar";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const MemorizeScreen = ({ route, navigation }) => {
   const curSetId = route.params.setId;
@@ -98,15 +98,15 @@ const MemorizeScreen = ({ route, navigation }) => {
       /> */}
         <PrimaryButton
           title={
-            <Ionicons name="close-circle" color={AllColors.red400} size={40} />
+            <MaterialIcons name="cancel" color={AllColors.red400} size={40} />
           }
           onPress={btnHandler.bind(this, "no")}
           bgcolor="transparent"
         />
         <PrimaryButton
           title={
-            <Ionicons
-              name="checkmark-circle"
+            <MaterialIcons
+              name="check-circle"
               color={AllColors.green400}
               size={40}
             />

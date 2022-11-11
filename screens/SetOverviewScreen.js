@@ -1,20 +1,20 @@
-import { useLayoutEffect, useState } from "react";
-import { View, StyleSheet, Text, TextInput, Alert } from "react-native";
+import { useLayoutEffect } from "react";
+import { View, StyleSheet, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../UI/PrimaryButton";
-import { Ionicons } from "@expo/vector-icons";
 import { AllColors } from "../UI/AllColors";
 import { setsActions } from "../store/sets";
 import { shuffleArr } from "../helper/shuffle";
+import SetInfo from "../components/SetInfo";
+import { stageCounter } from "../helper/stageCounter";
 
 const SetOverviewScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const curSetId = route.params.setId;
+  const { setId } = route.params;
   const shuffle = useSelector((state) => state.sets.shuffle);
   const allSets = useSelector((state) => state.sets.allSets);
-  const [nameIsEditing, setNameIsEditing] = useState(false);
 
-  const targetSet = allSets.find((item) => item.setId === curSetId);
+  const targetSet = allSets.find((item) => item.setId === setId);
   const targetCards = targetSet.cards;
   const minStage = targetCards.reduce((min, cur) => {
     if (cur.stage < min) min = cur.stage;
@@ -29,16 +29,16 @@ const SetOverviewScreen = ({ route, navigation }) => {
   }, []);
 
   const viewHandler = () => {
-    navigation.navigate("viewCards", { setId: curSetId });
+    navigation.navigate("viewCards", { setId, source: "sets" });
   };
   const memorizeHandler = () => {
-    navigation.navigate("memorizeScreen", { setId: curSetId, cards, minStage });
+    navigation.navigate("memorizeScreen", { setId, cards, minStage });
   };
   const addHandler = () => {
-    navigation.navigate("cardFormScreen", { setId: curSetId, mode: "new" });
+    navigation.navigate("cardFormScreen", { setId, mode: "new" });
   };
   const resetHandler = () => {
-    dispatch(setsActions.resetStage(curSetId));
+    dispatch(setsActions.resetStage(setId));
   };
   const deleteSetHandler = () => {
     Alert.alert(
@@ -50,119 +50,30 @@ const SetOverviewScreen = ({ route, navigation }) => {
           text: "Yes",
           onPress: () => {
             navigation.goBack();
-            dispatch(setsActions.deleteSet(curSetId));
+            dispatch(setsActions.deleteSet(setId));
           },
         },
       ]
     );
   };
 
-  const stageCounter = (cards, stage) => {
-    const num = cards.reduce((sum, cur) => {
-      if (cur.stage === stage) ++sum;
-      return sum;
-    }, 0);
-
-    return num;
-  };
-
-  const fullMemorize = targetCards.reduce((sum, cur) => {
-    if (cur.fullMemorize) ++sum;
-    return sum;
-  }, 0);
-  const [newName, setNewName] = useState(targetSet.name);
-  const nameIconHandler = () => {
-    setNameIsEditing(true);
-  };
-  const nameChangeHandler = (value) => {
-    setNewName(value);
-  };
-  const blurHandler = () => {
-    setNameIsEditing(false);
-    dispatch(setsActions.changeSetName({ setId: curSetId, newName }));
-  };
-
   return (
     <View style={styles.screen}>
-      <View style={styles.infoBox}>
-        <View style={styles.row}>
-          {!nameIsEditing && (
-            <>
-              <Text style={styles.infoTitle}>{targetSet.name}</Text>
-              <Ionicons
-                name="brush"
-                color={AllColors.grey200}
-                size={20}
-                onPress={nameIconHandler}
-                style={styles.editIcon}
-              />
-            </>
-          )}
-          {nameIsEditing && (
-            <>
-              <TextInput
-                style={styles.infoTitle}
-                defaultValue={targetSet.name}
-                onChangeText={nameChangeHandler}
-                onBlur={blurHandler}
-                autoFocus
-              />
-
-              <Ionicons
-                name="checkmark-circle"
-                color={AllColors.grey200}
-                size={20}
-                onPress={blurHandler}
-                style={styles.checkIcon}
-              />
-            </>
-          )}
-        </View>
-        <View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>All Cards</Text>
-            <Text style={styles.infoText}>{targetCards.length}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>Stage 1</Text>
-            <Text style={styles.infoText}>{stageCounter(targetCards, 1)}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>Stage 2</Text>
-            <Text style={styles.infoText}>{stageCounter(targetCards, 2)}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>Stage 3</Text>
-            <Text style={styles.infoText}>{stageCounter(targetCards, 3)}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>Stage 4</Text>
-            <Text style={styles.infoText}>{stageCounter(targetCards, 4)}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoText}>Full Memorize</Text>
-            <Text style={styles.infoText}>{fullMemorize}</Text>
-          </View>
-        </View>
-      </View>
+      <SetInfo setId={setId} />
       <View style={styles.buttons}>
-        <PrimaryButton
-          title="Add new card"
-          onPress={addHandler}
-          icon="add-circle"
-        />
+        <PrimaryButton title="Add new card" onPress={addHandler} icon="add" />
         {targetCards.length !== 0 && (
           <PrimaryButton
             title="View & edit cards"
             onPress={viewHandler}
-            icon="eye"
+            icon="edit"
           />
         )}
         {targetCards.length !== 0 && (
           <PrimaryButton
             title="Memorize"
             onPress={memorizeHandler}
-            icon="game-controller"
+            icon="gamepad"
           />
         )}
         {targetCards.length !== 0 &&
@@ -171,14 +82,14 @@ const SetOverviewScreen = ({ route, navigation }) => {
               title="Reset stages"
               onPress={resetHandler}
               bgcolor={AllColors.red400}
-              icon="repeat"
+              icon="cleaning-services"
             />
           )}
         <PrimaryButton
           title="Delete Set"
           onPress={deleteSetHandler}
           bgcolor={AllColors.red400}
-          icon="trash"
+          icon="delete"
         />
       </View>
     </View>

@@ -11,4 +11,5 @@ export const AllColors = {
   grey100: "#d4d4d4",
   grey200: "#9e9e9e",
   grey400: "#7c7c7c",
+  grey500: "#666666",
 };

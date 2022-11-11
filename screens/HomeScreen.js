@@ -39,7 +39,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={styles.screen}>
       <View style={styles.newSetBox}>
         <TextInput
           placeholder="Enter a name"
@@ -47,15 +47,11 @@ const HomeScreen = ({ navigation }) => {
           onChangeText={newNameHandler}
           value={newName}
         />
-        <PrimaryButton
-          title="Add New Set"
-          onPress={newSetHandler}
-          icon="add-circle"
-        />
+        <PrimaryButton title="Add New Set" onPress={newSetHandler} icon="add" />
       </View>
 
       <View style={styles.allSetBox}>
-        <Text style={styles.allSetTitle}>All sets</Text>
+        <Text style={styles.allSetTitle}>Your Flashcards</Text>
         {allSets.length === 0 && (
           <Text style={styles.noSetText}>There is no set.</Text>
         )}
@@ -72,7 +68,7 @@ const HomeScreen = ({ navigation }) => {
 export default HomeScreen;
 const styles = StyleSheet.create({
   screen: {
-    padding: 16,
+    margin: 16,
   },
   newSetBox: {
     flexDirection: "row",

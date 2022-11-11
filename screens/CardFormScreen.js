@@ -1,6 +1,6 @@
 import { TextInput, Text, View, StyleSheet } from "react-native";
 import { AllColors } from "../UI/AllColors";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import PrimaryButton from "../UI/PrimaryButton";
 import { useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -88,8 +88,8 @@ const CardFormScreen = ({ route, navigation }) => {
       headerRight: () => {
         return (
           mode === "edit" && (
-            <Ionicons
-              name="trash-bin"
+            <MaterialIcons
+              name="delete"
               size={20}
               color="white"
               onPress={deleteCardHandler}

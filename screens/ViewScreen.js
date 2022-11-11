@@ -1,44 +1,21 @@
-import { useLayoutEffect } from "react";
-import { FlatList, View } from "react-native";
 import { useSelector } from "react-redux";
-import CardItem from "../components/CardItem";
+import ViewCardsList from "../components/VIewCardsList";
 
-const ViewScreen = ({ route, navigation }) => {
-  const curSetId = route.params.setId;
-  const allSets = useSelector((state) => state.sets.allSets);
+const ViewScreen = ({ route }) => {
+  const { setId, source } = route.params;
+  let allSets = useSelector((state) => state.sets.allSets);
 
-  const targetSet = allSets.find((item) => item.setId === curSetId);
+  if (source === "market") {
+    allSets = useSelector((state) => state.market.allSets);
+  }
 
-  useLayoutEffect(() => {
-    navigation.setOptions({ title: targetSet.name });
-  }, []);
+  const targetSet = allSets.find((item) => item.setId === setId);
 
-  const renderItemHandler = (itemData) => {
-    const cardPressHandler = () => {
-      navigation.navigate("cardFormScreen", {
-        question: itemData.item.question,
-        answer: itemData.item.answer,
-        setId: curSetId,
-        cardId: itemData.item.cardId,
-        mode: "edit",
-      });
-    };
-    return (
-      <CardItem
-        question={itemData.item.question}
-        answer={itemData.item.answer}
-        onPress={cardPressHandler}
-      />
-    );
-  };
   return (
-    <View>
-      <FlatList
-        data={targetSet.cards}
-        keyExtractor={(item) => item.cardId}
-        renderItem={renderItemHandler}
-      />
-    </View>
+    <ViewCardsList
+      targetSet={targetSet}
+      allowPress={source === "market" ? false : true}
+    />
   );
 };
 

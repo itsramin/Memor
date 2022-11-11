@@ -1,6 +1,6 @@
 import { Pressable, Text, StyleSheet } from "react-native";
 import { AllColors } from "./AllColors";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 const PrimaryButton = ({
   title,
   onPress,
@@ -15,7 +15,12 @@ const PrimaryButton = ({
       style={[styles.view, { backgroundColor: bgcolor }, style]}
     >
       {icon && (
-        <Ionicons name={icon} color={textColor} size={20} style={styles.icon} />
+        <MaterialIcons
+          name={icon}
+          color={textColor}
+          size={20}
+          style={styles.icon}
+        />
       )}
       <Text style={[styles.text, { color: textColor }]}>{title}</Text>
     </Pressable>

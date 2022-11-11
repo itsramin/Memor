@@ -16,7 +16,11 @@ const MemorizeSummary = ({ correctNum, wrongNum, onPress, stage }) => {
         <Text>Wrongs; </Text>
         <Text>{wrongNum}</Text>
       </View>
-      <PrimaryButton title="Back" onPress={onPress} icon="chevron-back" />
+      <PrimaryButton
+        title="Back"
+        onPress={onPress}
+        icon="keyboard-arrow-left"
+      />
     </View>
   );
 };

@@ -1,98 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { futureDate } from "../helper/date";
 
 const sets = createSlice({
   name: "sets",
   initialState: {
     shuffle: false,
-    allSets: [
-      {
-        setId: "set1",
-        name: "504 words",
-
-        cards: [
-          {
-            question: "q1?",
-            answer: "ans1",
-            cardId: "car1",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q2?",
-            answer: "ans2",
-            cardId: "car2",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q3?",
-            answer: "ans3",
-            cardId: "car3",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q1 set2?",
-            answer: "ans1 set2",
-            cardId: "car4",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q2 set2?",
-            answer: "ans2 set2",
-            cardId: "car5",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q3 set2?",
-            answer: "ans3 set2",
-            cardId: "car6",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-        ],
-      },
-      {
-        setId: "set2",
-        name: "vocab",
-
-        cards: [
-          {
-            question: "q1 set2?",
-            answer: "ans1 set2",
-            cardId: "car4",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q2 set2?",
-            answer: "ans2 set2",
-            cardId: "car5",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-          {
-            question: "q3 set2?",
-            answer: "ans3 set2",
-            cardId: "car6",
-            nextReview: "",
-            stage: 1,
-            fullMemorize: false,
-          },
-        ],
-      },
-    ],
+    allSets: [],
   },
   reducers: {
     changeDate(state, action) {
@@ -188,9 +102,98 @@ const sets = createSlice({
       );
       state.allSets.splice(targetSetIndex, 1);
     },
+    addFromMarket(state, action) {
+      state.allSets.unshift(action.payload.newSet);
+    },
   },
 });
 
 export const setsActions = sets.actions;
 
-export default sets.reducer;
+export default sets;
+
+// setId: "set1",
+// name: "504 words",
+
+// cards: [
+//   {
+//     question: "q1?",
+//     answer: "ans1",
+//     cardId: "car1",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q2?",
+//     answer: "ans2",
+//     cardId: "car2",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q3?",
+//     answer: "ans3",
+//     cardId: "car3",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q1 set2?",
+//     answer: "ans1 set2",
+//     cardId: "car4",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q2 set2?",
+//     answer: "ans2 set2",
+//     cardId: "car5",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q3 set2?",
+//     answer: "ans3 set2",
+//     cardId: "car6",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+// ],
+// },
+// {
+// setId: "set2",
+// name: "vocab",
+
+// cards: [
+//   {
+//     question: "q1 set2?",
+//     answer: "ans1 set2",
+//     cardId: "car4",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q2 set2?",
+//     answer: "ans2 set2",
+//     cardId: "car5",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+//   {
+//     question: "q3 set2?",
+//     answer: "ans3 set2",
+//     cardId: "car6",
+//     nextReview: "",
+//     stage: 1,
+//     fullMemorize: false,
+//   },
+// ],
+// },

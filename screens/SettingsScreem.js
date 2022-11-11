@@ -8,9 +8,11 @@ const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const shuffle = useSelector((state) => state.sets.shuffle);
+
   useLayoutEffect(() => {
-    navigation.setOptions({ headerRight: () => {} });
+    navigation.setOptions({ title: "Settings" });
   }, []);
+
   const changeShuffleHandler = () => {
     dispatch(setsActions.changeShuffle(!shuffle));
   };
@@ -39,10 +41,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottomColor: AllColors.primary300,
+    borderBottomColor: AllColors.grey400,
     borderBottomWidth: 1,
   },
   optionText: {
-    color: AllColors.primary500,
+    color: AllColors.grey500,
   },
 });

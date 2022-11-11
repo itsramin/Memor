@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 const SettingIcon = () => {
@@ -8,7 +8,12 @@ const SettingIcon = () => {
   };
 
   return (
-    <Ionicons name="settings" color="white" size={24} onPress={pressHandler} />
+    <MaterialIcons
+      name="settings"
+      color="white"
+      size={24}
+      onPress={pressHandler}
+    />
   );
 };
 
