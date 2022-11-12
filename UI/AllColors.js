@@ -6,6 +6,7 @@ export const AllColors = {
   primary100: "#dae3fa",
   green500: "#0a502d",
   green400: "#127443",
+  green100: "#d9ffeb",
   red500: "#961818",
   red400: "#b32929",
   grey100: "#d4d4d4",
