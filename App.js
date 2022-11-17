@@ -8,12 +8,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
 import SetOverviewScreen from "./screens/SetOverviewScreen";
 import ViewScreen from "./screens/ViewScreen";
-import MemorizeScreen from "./screens/MemorizeScreen";
+import StageModeScreen from "./screens/StageModeScreen";
 import CardFormScreen from "./screens/CardFormScreen";
 import SettingIcon from "./UI/SettingIcon";
 import SettingsScreen from "./screens/SettingsScreem";
 import MarketScreen from "./screens/MarketScreen";
 import { MaterialIcons } from "@expo/vector-icons";
+import DailyModeScreen from "./screens/DailyModeScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -77,7 +78,8 @@ export default function App() {
             />
             <Stack.Screen name="setOverview" component={SetOverviewScreen} />
             <Stack.Screen name="viewCards" component={ViewScreen} />
-            <Stack.Screen name="memorizeScreen" component={MemorizeScreen} />
+            <Stack.Screen name="StageModeScreen" component={StageModeScreen} />
+            <Stack.Screen name="DailyModeScreen" component={DailyModeScreen} />
             <Stack.Screen name="cardFormScreen" component={CardFormScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
           </Stack.Navigator>

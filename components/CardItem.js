@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { daysLeft } from "../helper/date";
 import { AllColors } from "../UI/AllColors";
 
-const CardItem = ({ question, answer, onPress }) => {
+const CardItem = ({ question, answer, onPress, nextReview }) => {
   return (
     <Pressable style={styles.outer} onPress={onPress}>
       <View style={styles.question}>
@@ -10,6 +11,13 @@ const CardItem = ({ question, answer, onPress }) => {
       <View>
         <Text style={styles.text}>{answer}</Text>
       </View>
+      {nextReview && (
+        <View>
+          <Text style={styles.text}>
+            {daysLeft(nextReview)} - {nextReview}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 };

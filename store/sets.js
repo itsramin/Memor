@@ -105,6 +105,14 @@ const sets = createSlice({
     addFromMarket(state, action) {
       state.allSets.unshift(action.payload.newSet);
     },
+    changeLastDaily(state, action) {
+      const targetSet = state.allSets.find(
+        (set) => set.setId === action.payload.setId
+      );
+      targetSet.lastDaily = new Date(action.payload.lastDaily)
+        .toISOString()
+        .slice(0, 10);
+    },
   },
 });
 

@@ -38,6 +38,7 @@ const ViewCardsList = ({ targetSet, allowPress }) => {
     };
     return (
       <CardItem
+        nextReview={itemData.item.nextReview}
         question={itemData.item.question}
         answer={itemData.item.answer}
         onPress={cardPressHandler}
@@ -45,7 +46,7 @@ const ViewCardsList = ({ targetSet, allowPress }) => {
     );
   };
   return (
-    <View>
+    <View style={styles.screen}>
       <View style={styles.searchView}>
         <MaterialIcons
           name="search"
@@ -71,6 +72,7 @@ const ViewCardsList = ({ targetSet, allowPress }) => {
 export default ViewCardsList;
 
 const styles = StyleSheet.create({
+  screen: { paddingBottom: 16, flex: 1 },
   searchView: {
     marginHorizontal: 20,
     marginBottom: 16,

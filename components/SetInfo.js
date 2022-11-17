@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { AllColors } from "../UI/AllColors";
 import { setsActions } from "../store/sets";
 import { stageCounter } from "../helper/stageCounter";
+import StageBar from "./StageBar";
 
 const SetInfo = ({ setId }) => {
   const dispatch = useDispatch();
@@ -28,6 +29,14 @@ const SetInfo = ({ setId }) => {
     if (cur.fullMemorize) ++sum;
     return sum;
   }, 0);
+
+  const values = {
+    stage1: stageCounter(targetCards, 1),
+    stage2: stageCounter(targetCards, 2),
+    stage3: stageCounter(targetCards, 3),
+    stage4: stageCounter(targetCards, 4),
+    full: fullMemorize,
+  };
   return (
     <View style={styles.infoBox}>
       <View style={styles.row}>
@@ -89,6 +98,7 @@ const SetInfo = ({ setId }) => {
           <Text style={styles.infoText}>{fullMemorize}</Text>
         </View>
       </View>
+      <StageBar values={values} />
     </View>
   );
 };
