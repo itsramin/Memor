@@ -2,9 +2,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 const SettingIcon = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const pressHandler = () => {
-    navigation.navigate("Settings");
+    // navigation.navigate("Settings");
   };
 
   return (
