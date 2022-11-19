@@ -120,23 +120,9 @@ const market = createSlice({
       },
     ],
   },
-  reducers: {
-    // addToMySets(state, action) {
-    //   const setId = action.payload.setId;
-    //   const targetSet = state.allSets.find((set) => set.setId === setId);
-    //   dispatch(setsActions.addFromMarket({ targetSet }));
-    // },
-  },
+  reducers: {},
 });
 
 export const marketActions = market.actions;
 
-export default market;
-// {
-//   question: "q3 set2?",
-//   answer: "ans3 set2",
-//   cardId: "car6",
-//   nextReview: "",
-//   stage: 1,
-//   fullMemorize: false,
-// },
+export default market.reducer;

@@ -75,30 +75,51 @@ const SetInfo = ({ setId }) => {
       <View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>All Cards</Text>
-          <Text style={styles.infoText}>{targetCards.length}</Text>
+          <Text style={styles.infoText}>
+            {targetCards.length + targetSet.dailyCards.length}
+          </Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>Stage 1</Text>
-          <Text style={styles.infoText}>{stageCounter(targetCards, 1)}</Text>
+          <Text style={styles.infoText}>
+            {stageCounter(targetCards, [0, 1]) +
+              stageCounter(targetSet.dailyCards, [0, 1])}
+          </Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>Stage 2</Text>
-          <Text style={styles.infoText}>{stageCounter(targetCards, 2)}</Text>
+          <Text style={styles.infoText}>
+            {stageCounter(targetCards, [1, 3]) +
+              stageCounter(targetSet.dailyCards, [1, 3])}
+          </Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>Stage 3</Text>
-          <Text style={styles.infoText}>{stageCounter(targetCards, 3)}</Text>
+          <Text style={styles.infoText}>
+            {stageCounter(targetCards, [3, 7]) +
+              stageCounter(targetSet.dailyCards, [3, 7])}
+          </Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>Stage 4</Text>
-          <Text style={styles.infoText}>{stageCounter(targetCards, 4)}</Text>
+          <Text style={styles.infoText}>
+            {stageCounter(targetCards, [7, 15]) +
+              stageCounter(targetSet.dailyCards, [7, 15])}
+          </Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Stage 5</Text>
+          <Text style={styles.infoText}>
+            {stageCounter(targetCards, [15, 30]) +
+              stageCounter(targetSet.dailyCards, [15, 30])}
+          </Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>Full Memorize</Text>
           <Text style={styles.infoText}>{fullMemorize}</Text>
         </View>
       </View>
-      <StageBar values={values} />
+      {/* <StageBar values={values} /> */}
     </View>
   );
 };

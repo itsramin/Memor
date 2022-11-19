@@ -1,8 +1,8 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar, StyleSheet, Text } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
-import { Provider } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./store/store";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
@@ -15,12 +15,25 @@ import SettingsScreen from "./screens/SettingsScreem";
 import MarketScreen from "./screens/MarketScreen";
 import { MaterialIcons } from "@expo/vector-icons";
 import DailyModeScreen from "./screens/DailyModeScreen";
+import { useEffect } from "react";
+import { settingsActions } from "./store/settings";
+import { setsActions } from "./store/sets";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 export default function App() {
   const HomePage = () => {
+    const isFocused = useIsFocused();
+    const today = useSelector((state) => state.settings.today);
+    const dispatch = useDispatch();
+    useEffect(() => {
+      if (today !== new Date().toISOString().slice(0, 10)) {
+        dispatch(settingsActions.changeToday());
+        dispatch(setsActions.changeAllCreationStatus());
+        dispatch(setsActions.cleanDailyCards());
+      }
+    }, [today, isFocused]);
     return (
       <BottomTab.Navigator
         screenOptions={({ route }) => ({

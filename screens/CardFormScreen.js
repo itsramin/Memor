@@ -62,13 +62,8 @@ const CardFormScreen = ({ route, navigation }) => {
       dispatch(
         setsActions.addCard({
           setId,
-
-          cardData: {
-            answer,
-            question,
-            newtReview: "",
-            cardId: `${+new Date()}${Math.floor(Math.random() * 1000)}`,
-          },
+          answer,
+          question,
         })
       );
     }

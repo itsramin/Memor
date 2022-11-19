@@ -8,75 +8,78 @@ import PrimaryButton from "../UI/PrimaryButton";
 import ProgressBar from "../UI/ProgressBar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { shuffleArr } from "../helper/shuffle";
 
-const MemorizeCards = ({ cards, setId, minStage, mode }) => {
+const MemorizeCards = ({ cards, setId }) => {
+  // console.log("cards", cards.length, cards);
+  // console.log("size", size);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [cardNum, setCardNum] = useState(0);
+  // const [cardNum, setCardNum] = useState(0);
   const [answerVisible, setAnswerVisible] = useState(false);
   const [cardsOver, setCardsOver] = useState(false);
 
   const [correctNum, setCorrectNum] = useState(0);
   const [wrongNum, setWrongNum] = useState(0);
 
+  const shuffle = useSelector((state) => state.settings.shuffle);
+
   const showAnswerHandler = () => {
     setAnswerVisible((prev) => !prev);
   };
+
+  const cardNum = shuffle ? Math.floor(Math.random() * cards.length) : 0;
   const card = cards[cardNum];
   const responseHandler = (status) => {
+    dispatch(setsActions.changeLastDaily({ setId, lastDaily: new Date() }));
     status === "no"
       ? setWrongNum((prev) => prev + 1)
       : setCorrectNum((prev) => prev + 1);
 
-    if (mode === "daily") {
-      let daysCount = 2;
-      if (status === "easy") daysCount = 4;
-      if (status === "very easy") daysCount = 6;
-
-      dispatch(
-        setsActions.changeDate({
-          days: daysCount,
-          setId: setId,
-          cardId: cards[cardNum].cardId,
-        })
-      );
+    if (status === "yes") {
+      dispatch(setsActions.stageUpCurCard({ setId, cardId: card.cardId }));
     } else {
-      if (status !== "no") {
-        dispatch(
-          setsActions.changeStage({
-            setId,
-            cardId: cards[cardNum].cardId,
-          })
-        );
-      }
+      dispatch(setsActions.stageDownCurCard({ setId, cardId: card.cardId }));
     }
+    // console.log(cards.length);
 
-    if (cardNum === cards.length - 1) {
+    if (cards.length === 1) {
       return setCardsOver(true);
     }
 
-    setCardNum((prev) => prev + 1);
+    // setCardNum((prev) => prev + 1);
   };
   const backHandler = () => {
     navigation.goBack();
-    dispatch(setsActions.changeLastDaily({ setId, lastDaily: new Date() }));
   };
 
   let content = (
-    <View style={styles.screen}>
-      <View>
-        <ProgressBar progress={(cardNum + 1) / cards.length} />
+    <MemorizeSummary
+      correctNum={correctNum}
+      wrongNum={wrongNum}
+      onPress={backHandler}
+    />
+  );
+
+  if (!cardsOver) {
+    content = (
+      <View style={styles.screen}>
+        <View>
+          <Text style={styles.progressText}>Cards left : {cards.length}</Text>
+          {/* <ProgressBar progress={(cardNum + 1) / cards.length} />
         <Text style={styles.progressText}>
           {cardNum + 1} of {cards.length}
-        </Text>
-      </View>
-      <Pressable style={styles.qaView} onPress={showAnswerHandler}>
-        <Text style={styles.text}>
-          {answerVisible ? card.answer : card.question}
-        </Text>
-      </Pressable>
+        </Text> */}
+        </View>
+        <Pressable style={styles.qaView} onPress={showAnswerHandler}>
+          <Text style={styles.text}>
+            {answerVisible ? card.answer : card.question}
+          </Text>
+          <Text>
+            {card.cardId} - {card.stage}
+          </Text>
+        </Pressable>
 
-      {mode !== "daily" && (
         <View style={styles.actions}>
           <PrimaryButton
             title={
@@ -97,41 +100,7 @@ const MemorizeCards = ({ cards, setId, minStage, mode }) => {
             bgcolor="transparent"
           />
         </View>
-      )}
-      {mode == "daily" && (
-        <View style={styles.actions}>
-          <PrimaryButton
-            title="No"
-            onPress={responseHandler.bind(this, "no")}
-            bgcolor={AllColors.red500}
-          />
-          <PrimaryButton
-            title="Normal"
-            onPress={responseHandler.bind(this, "normal")}
-            bgcolor={AllColors.green300}
-          />
-          <PrimaryButton
-            title="Easy"
-            onPress={responseHandler.bind(this, "easy")}
-            bgcolor={AllColors.green400}
-          />
-          <PrimaryButton
-            title="Very easy"
-            onPress={responseHandler.bind(this, "very easy")}
-            bgcolor={AllColors.green500}
-          />
-        </View>
-      )}
-    </View>
-  );
-  if (cardsOver) {
-    content = (
-      <MemorizeSummary
-        correctNum={correctNum}
-        wrongNum={wrongNum}
-        onPress={backHandler}
-        stage={minStage}
-      />
+      </View>
     );
   }
   return content;

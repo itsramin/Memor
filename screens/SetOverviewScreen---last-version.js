@@ -4,76 +4,80 @@ import { useDispatch, useSelector } from "react-redux";
 import PrimaryButton from "../UI/PrimaryButton";
 import { AllColors } from "../UI/AllColors";
 import { setsActions } from "../store/sets";
+import { shuffleArr } from "../helper/shuffle";
 import SetInfo from "../components/SetInfo";
+import { stageCounter } from "../helper/stageCounter";
+import { isToday } from "../helper/date";
 import { useIsFocused } from "@react-navigation/native";
 
 const SetOverviewScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const { setId } = route.params;
+  const shuffle = useSelector((state) => state.settings.shuffle);
   const allSets = useSelector((state) => state.sets.allSets);
-  const today = useSelector((state) => state.settings.today);
   const targetSet = allSets.find((item) => item.setId === setId);
   const targetCards = targetSet.cards;
   const lastDaily = targetSet.lastDaily;
-  const dailyCards = targetSet.dailyCards;
-  const [dailyAllow, setDailyAllow] = useState(false);
-  const isFocused = useIsFocused();
-  const isDailyCardsCreateToday = targetSet.isDailyCardsCreateToday;
-  const dailyCardsAmount = useSelector(
-    (state) => state.settings.dailyCardsAmount
-  );
-  // const [cards, setCards] = useState(todayCards);
 
-  // useEffect(() => {
-  //   // console.table(targetCards);
+  const [dailyModeAllow, setDailyModeAllow] = useState(true);
 
-  //   if (lastDaily !== new Date().toISOString().slice(0, 10) && isFocused) {
-  //     // console.log(lastDaily);
-  //     dispatch(setsActions.createDailyCards({ setId }));
-  //     dispatch(setsActions.stageUpAllCards({ setId }));
-  //     // console.log(targetSet.dailyCards);
-  //     setDailyAllow(true);
-  //   } else {
-  //     setDailyAllow(false);
-  //   }
-  // }, [lastDaily, isFocused]);
-  // useEffect(() => {
-  //   if (lastDaily !== today && isFocused) {
-  //     if (!isDailyCardsCreateToday) {
-  //       dispatch(setsActions.createDailyCards({ setId, dailyCardsAmount }));
-  //       dispatch(setsActions.stageUpAllCards({ setId }));
-  //       dispatch(setsActions.changeCreationStatus({ setId }));
-  //     }
-
-  //     setDailyAllow(true);
-  //   } else if (dailyCards.length > 0 && isFocused) {
-  //     setDailyAllow(true);
-  //   } else {
-  //     setDailyAllow(false);
-  //   }
-  // }, [dailyCards, isFocused]);
   useEffect(() => {
-    if ((lastDaily !== today || dailyCards.length > 0) && isFocused) {
-      setDailyAllow(true);
+    if (lastDaily === new Date().toISOString().slice(0, 10))
+      setDailyModeAllow(false);
+  }, [isFocused]);
+
+  const minStage = targetCards.reduce((min, cur) => {
+    if (cur.stage < min) min = cur.stage;
+    return min;
+  }, 5);
+
+  const allCards = targetCards.filter((card) => card.stage === minStage);
+  // console.log("allCards", allCards.length, allCards);
+
+  const cards = shuffle ? shuffleArr(allCards) : allCards;
+
+  const [dailyCards, setDailyCards] = useState([]);
+
+  useEffect(() => {
+    // daily part
+    const allNewCards = targetCards.filter((card) => card.nextReview === "");
+    const shuffleAllNewCards = shuffle ? shuffleArr(allNewCards) : allNewCards;
+    const newCards = shuffleAllNewCards.slice(0, 2);
+
+    // console.log("dailyCards", newCards.length, newCards);
+
+    // today
+    const todayCards = targetCards.filter((card) => isToday(card.nextReview));
+    // console.log("todayCards", todayCards.length, todayCards);
+    if (todayCards.length > 0) {
+      setDailyCards((prev) => [...prev, ...newCards, ...todayCards]);
     } else {
-      setDailyAllow(false);
+      setDailyCards((prev) => [...prev, ...newCards]);
     }
-  }, [dailyCards, isFocused]);
+  }, [targetCards, isFocused]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: targetSet.name });
   }, []);
+
   const viewHandler = () => {
     navigation.navigate("viewCards", { setId, source: "sets" });
+  };
+  const stageModeHandler = () => {
+    navigation.navigate("StageModeScreen", { setId, cards, minStage });
   };
   const addHandler = () => {
     navigation.navigate("cardFormScreen", { setId, mode: "new" });
   };
   const dailyModeHandler = () => {
-    if (!dailyAllow) return;
-    navigation.navigate("DailyModeScreen", { setId });
-  };
+    if (dailyCards.length < 1 || !dailyModeAllow) return;
 
+    navigation.navigate("DailyModeScreen", { setId, cards: dailyCards });
+  };
+  const resetHandler = () => {
+    dispatch(setsActions.resetStage(setId));
+  };
   const deleteSetHandler = () => {
     Alert.alert(
       "Delete Set",
@@ -105,13 +109,38 @@ const SetOverviewScreen = ({ route, navigation }) => {
         )}
         {targetCards.length !== 0 && (
           <PrimaryButton
-            title="Daily Mode"
+            title={
+              dailyCards.length < 1
+                ? "Daily Mode - cards over"
+                : !dailyModeAllow
+                ? "Daily Mode - Done"
+                : "Daily Mode"
+            }
             onPress={dailyModeHandler}
+            bgcolor={
+              dailyCards.length < 1 || !dailyModeAllow
+                ? AllColors.grey400
+                : AllColors.primary400
+            }
             icon="wb-sunny"
-            bgcolor={dailyAllow ? AllColors.primary400 : AllColors.grey400}
           />
         )}
-
+        {targetCards.length !== 0 && (
+          <PrimaryButton
+            title="Stage Mode"
+            onPress={stageModeHandler}
+            icon="gamepad"
+          />
+        )}
+        {targetCards.length !== 0 &&
+          targetCards.length !== stageCounter(targetCards, 1) && (
+            <PrimaryButton
+              title="Reset stages"
+              onPress={resetHandler}
+              bgcolor={AllColors.red400}
+              icon="cleaning-services"
+            />
+          )}
         <PrimaryButton
           title="Delete Set"
           onPress={deleteSetHandler}

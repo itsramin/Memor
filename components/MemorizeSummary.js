@@ -6,12 +6,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 const MemorizeSummary = ({ correctNum, wrongNum, onPress, stage }) => {
   return (
     <View style={styles.screen}>
-      {wrongNum === 0 && (
+      {/* {wrongNum === 0 && (
         <View style={styles.stageView}>
           <MaterialIcons name="done-all" color={AllColors.green500} size={20} />
           <Text style={styles.stageText}>Stage {stage} complete!</Text>
         </View>
-      )}
+      )} */}
 
       <View style={styles.summaryView}>
         <Text style={styles.title}>Summary</Text>
