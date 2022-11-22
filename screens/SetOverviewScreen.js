@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Alert } from "react-native";
 import SetInfo from "../components/SetInfo";
 import { dbDeleteSet, dbFetchSetName } from "../store/database";
 import { AllColors } from "../UI/AllColors";
@@ -19,9 +19,21 @@ const SetOverviewScreen = ({ route, navigation }) => {
     navigation.setOptions({ title: curSetName });
   }, [curSetName]);
 
-  const deleteSetHandler = async () => {
-    await dbDeleteSet(setId);
-    navigation.goBack();
+  const deleteSetHandler = () => {
+    Alert.alert(
+      "Delete Set",
+      "Are you sure you want to delete this flashcard set?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            await dbDeleteSet(setId);
+            navigation.goBack();
+          },
+        },
+      ]
+    );
   };
   const addNewCardHandler = async () => {
     navigation.navigate("CardFormScreen", { setId });

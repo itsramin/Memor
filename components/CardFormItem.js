@@ -42,6 +42,10 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
     navigation.goBack();
   };
 
+  const cancelHandler = () => {
+    navigation.goBack();
+  };
+
   return (
     <View>
       <View style={styles.control}>
@@ -74,6 +78,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
           title="Cancel"
           bgcolor={AllColors.primary100}
           textColor={AllColors.primary400}
+          onPress={cancelHandler}
         />
       </View>
     </View>

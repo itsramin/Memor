@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import CardFormItem from "../components/CardFormItem";
 import { MaterialIcons } from "@expo/vector-icons";
 import { dbDeleteCard } from "../store/database";
@@ -7,9 +7,17 @@ import { dbDeleteCard } from "../store/database";
 const CardFormScreen = ({ route, navigation }) => {
   const { setId, cardId, answer, question } = route.params;
 
-  const deleteCardHandler = async () => {
-    await dbDeleteCard(cardId);
-    navigation.navigate("CardListScreen", { setId });
+  const deleteCardHandler = () => {
+    Alert.alert("Delete Card", "Are you sure you want to delete this card?", [
+      { text: "No", style: "cancel" },
+      {
+        text: "Yes",
+        onPress: async () => {
+          await dbDeleteCard(cardId);
+          navigation.goBack();
+        },
+      },
+    ]);
   };
 
   useLayoutEffect(() => {
