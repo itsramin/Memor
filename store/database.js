@@ -197,3 +197,21 @@ export function dbDeleteCard(cardId) {
 
   return promise;
 }
+export function dbUpdateCard(card) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET question = ?, answer = ? WHERE card_id = ? ",
+        [card.question, card.answer, card.cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}

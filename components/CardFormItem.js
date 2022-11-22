@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { StyleSheet, TextInput, View, Text } from "react-native";
-import { dbAddCard } from "../store/database";
+import { dbAddCard, dbUpdateCard } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 
@@ -18,18 +18,28 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
     setAnswerText(value);
   };
 
-  const addCardHandler = () => {
+  const saveCardHandler = async () => {
     if (questionText.trim() === "" || answerText.trim() === "") return;
 
-    const newCard = {
-      setId,
-      answer: answerText,
-      question: questionText,
-    };
-    dbAddCard(newCard);
+    if (cardId) {
+      const updateCard = {
+        cardId,
+        answer: answerText,
+        question: questionText,
+      };
+      await dbUpdateCard(updateCard);
+    } else {
+      const newCard = {
+        setId,
+        answer: answerText,
+        question: questionText,
+      };
+      await dbAddCard(newCard);
+    }
     setQuestionText("");
     setAnswerText("");
-    navigation.navigate("SetOverviewScreen", { setId });
+
+    navigation.goBack();
   };
 
   return (
@@ -58,7 +68,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
       <View style={styles.actions}>
         <PrimaryButton
           title={cardId ? "Update" : "Add"}
-          onPress={addCardHandler}
+          onPress={saveCardHandler}
         />
         <PrimaryButton
           title="Cancel"
