@@ -2,12 +2,13 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import CardList from "../components/CardList";
-import { dbFetchAllCards } from "../store/database";
+import { dbFetchAllCards, dbFetchSetName } from "../store/database";
 
-const CardListScreen = ({ route }) => {
+const CardListScreen = ({ route, navigation }) => {
   const isFocused = useIsFocused();
   const { setId } = route.params;
   const [curCards, setCurCards] = useState([]);
+  const [curSetName, setCurSetName] = useState();
 
   useEffect(() => {
     const fetchHandler = async () => {
@@ -17,7 +18,14 @@ const CardListScreen = ({ route }) => {
     if (isFocused) {
       fetchHandler();
     }
-  }, [isFocused]);
+    const namefetchHandler = async () => {
+      const setName = await dbFetchSetName(setId);
+      setCurSetName(setName);
+    };
+    namefetchHandler();
+
+    navigation.setOptions({ title: curSetName });
+  }, [isFocused, curSetName]);
 
   return <CardList cards={curCards} />;
 };

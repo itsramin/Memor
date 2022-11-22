@@ -88,8 +88,16 @@ export default function App() {
             name="SetOverviewScreen"
             component={SetOverviewScreen}
           />
-          <Stack.Screen name="CardFormScreen" component={CardFormScreen} />
-          <Stack.Screen name="CardListScreen" component={CardListScreen} />
+          <Stack.Screen
+            name="CardFormScreen"
+            component={CardFormScreen}
+            options={{ title: "Card edit" }}
+          />
+          <Stack.Screen
+            name="CardListScreen"
+            component={CardListScreen}
+            options={{ title: "Card list" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>

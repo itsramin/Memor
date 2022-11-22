@@ -6,13 +6,6 @@ import { dbDeleteCard } from "../store/database";
 
 const CardFormScreen = ({ route, navigation }) => {
   const { setId, cardId, answer, question } = route.params;
-  console.log(
-    "file: CardFormScreen.js ~ line 9 ~ setId, cardId, answer, question",
-    setId,
-    cardId,
-    answer,
-    question
-  );
 
   const deleteCardHandler = async () => {
     await dbDeleteCard(cardId);
