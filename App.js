@@ -4,15 +4,30 @@ import { StatusBar, StyleSheet, Text } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
-
+import AppLoading from "expo-app-loading";
 import SettingIcon from "./UI/SettingIcon";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { initSets, initCards } from "./store/database";
+import SetOverviewScreen from "./screens/SetOverviewScreen";
+import CardFormScreen from "./screens/CardFormScreen";
+import CardListScreen from "./screens/CardListScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 export default function App() {
+  // const [dbLoading, setDbLoading] = useState(false);
+  useEffect(() => {
+    console.log("init");
+    initSets()
+      .then(() => {})
+      .catch((err) => console.log(err));
+    initCards()
+      .then(() => {})
+      .catch((err) => console.log(err));
+  }, []);
   const HomePage = () => {
     return (
       <BottomTab.Navigator
@@ -69,6 +84,12 @@ export default function App() {
             component={HomePage}
             options={{ contentStyle: { padding: 0 }, title: "Memor" }}
           />
+          <Stack.Screen
+            name="SetOverviewScreen"
+            component={SetOverviewScreen}
+          />
+          <Stack.Screen name="CardFormScreen" component={CardFormScreen} />
+          <Stack.Screen name="CardListScreen" component={CardListScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </>

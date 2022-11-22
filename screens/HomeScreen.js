@@ -1,19 +1,62 @@
-import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet, FlatList, Text } from "react-native";
+import AddNewSet from "../components/AddNewSet";
+import SetItem from "../components/SetItem";
+import { dbFetchAllsets } from "../store/database";
 
 import { AllColors } from "../UI/AllColors";
 
 const HomeScreen = ({ navigation }) => {
-  return <View style={styles.screen}></View>;
+  const [setsList, setSetsList] = useState([]);
+
+  useEffect(() => {
+    const fetchHandler = async () => {
+      const fetchedSets = await dbFetchAllsets();
+      setSetsList(fetchedSets);
+    };
+
+    fetchHandler();
+  }, [setsList]);
+
+  const renderItemHandler = (itemData) => {
+    return (
+      <SetItem
+        set={itemData.item}
+        onPress={() => {
+          navigation.navigate("SetOverviewScreen", {
+            setId: itemData.item.setId,
+          });
+        }}
+      />
+    );
+  };
+
+  let content = <Text style={styles.noSetText}>No set</Text>;
+
+  if (setsList.length > 0) {
+    content = (
+      <FlatList
+        data={setsList}
+        keyExtractor={(item) => item.setId}
+        renderItem={renderItemHandler}
+      />
+    );
+  }
+  return (
+    <View style={styles.screen}>
+      <AddNewSet />
+      <View style={styles.allSetBox}>
+        <Text style={styles.allSetTitle}>Your Sets</Text>
+        {content}
+      </View>
+    </View>
+  );
 };
 
 export default HomeScreen;
 const styles = StyleSheet.create({
   screen: {
     margin: 16,
-  },
-  newSetBox: {
-    flexDirection: "row",
-    alignItems: "center",
   },
   allSetBox: {
     marginVertical: 16,
