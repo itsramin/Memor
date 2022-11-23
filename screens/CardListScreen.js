@@ -1,6 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
 import CardList from "../components/CardList";
 import { dbFetchAllCards, dbFetchSetName } from "../store/database";
 

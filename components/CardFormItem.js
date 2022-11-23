@@ -18,7 +18,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
     setAnswerText(value);
   };
 
-  const saveCardHandler = async () => {
+  const saveCardHandler = async (status) => {
     if (questionText.trim() === "" || answerText.trim() === "") return;
 
     if (cardId) {
@@ -39,7 +39,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
     setQuestionText("");
     setAnswerText("");
 
-    navigation.goBack();
+    if (status !== "stay") return navigation.goBack();
   };
 
   const cancelHandler = () => {
@@ -70,6 +70,12 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
       </View>
 
       <View style={styles.actions}>
+        {!cardId && (
+          <PrimaryButton
+            title="Save & Stay"
+            onPress={saveCardHandler.bind(this, "stay")}
+          />
+        )}
         <PrimaryButton
           title={cardId ? "Update" : "Add"}
           onPress={saveCardHandler}

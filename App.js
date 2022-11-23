@@ -20,7 +20,6 @@ const BottomTab = createBottomTabNavigator();
 export default function App() {
   // const [dbLoading, setDbLoading] = useState(false);
   useEffect(() => {
-    console.log("init");
     initSets()
       .then(() => {})
       .catch((err) => console.log(err));
