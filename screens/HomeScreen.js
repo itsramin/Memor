@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Text,
+  TouchableWithoutFeedback,
+} from "react-native";
 import AddNewSet from "../components/AddNewSet";
 import SetItem from "../components/SetItem";
 import { dbFetchAllsets } from "../store/database";
@@ -8,6 +14,7 @@ import { AllColors } from "../UI/AllColors";
 
 const HomeScreen = ({ navigation }) => {
   const [setsList, setSetsList] = useState([]);
+  const [blur, setBlur] = useState(false);
 
   useEffect(() => {
     const fetchHandler = async () => {
@@ -31,6 +38,10 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const blurHandler = () => {
+    setBlur((prev) => !prev);
+  };
+
   let content = <Text style={styles.noSetText}>No set</Text>;
 
   if (setsList.length > 0) {
@@ -43,20 +54,24 @@ const HomeScreen = ({ navigation }) => {
     );
   }
   return (
-    <View style={styles.screen}>
-      <AddNewSet />
-      <View style={styles.allSetBox}>
-        <Text style={styles.allSetTitle}>Your Sets</Text>
-        {content}
+    <TouchableWithoutFeedback onPress={blurHandler}>
+      <View style={styles.screen}>
+        <AddNewSet blur={blur} />
+        <View style={styles.allSetBox}>
+          <Text style={styles.allSetTitle}>Your Sets</Text>
+          {content}
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 export default HomeScreen;
 const styles = StyleSheet.create({
+  all: { backgroundColor: "yellow", flex: 1 },
   screen: {
     margin: 16,
+    flex: 1,
   },
   allSetBox: {
     marginVertical: 16,

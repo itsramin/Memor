@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { StyleSheet, TextInput, View, Text } from "react-native";
 import { dbAddCard, dbUpdateCard } from "../store/database";
 import { AllColors } from "../UI/AllColors";
@@ -7,19 +7,36 @@ import PrimaryButton from "../UI/PrimaryButton";
 
 const CardFormItem = ({ setId, cardId, answer, question }) => {
   const navigation = useNavigation();
+  const questionRef = useRef();
+  const answerRef = useRef();
 
   const [questionText, setQuestionText] = useState(cardId ? question : "");
   const [answerText, setAnswerText] = useState(cardId ? answer : "");
 
+  const [questionIsInvalid, setQuestionIsInvalid] = useState(false);
+  const [answerIsInvalid, setAnswerIsInvalid] = useState(false);
+
   const questionChangeHandler = (value) => {
     setQuestionText(value);
+    setQuestionIsInvalid(false);
   };
   const answerChangeHandler = (value) => {
     setAnswerText(value);
+    setAnswerIsInvalid(false);
   };
 
   const saveCardHandler = async (status) => {
-    if (questionText.trim() === "" || answerText.trim() === "") return;
+    if (questionText.trim() === "") {
+      setQuestionIsInvalid(true);
+      answerText.trim() === "" && setAnswerIsInvalid(true);
+      questionRef.current.focus();
+      return;
+    }
+    if (answerText.trim() === "") {
+      answerRef.current.focus();
+      setAnswerIsInvalid(true);
+      return;
+    }
 
     if (cardId) {
       const updateCard = {
@@ -39,6 +56,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
     setQuestionText("");
     setAnswerText("");
 
+    questionRef.current.focus();
     if (status !== "stay") return navigation.goBack();
   };
 
@@ -49,23 +67,31 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
   return (
     <View>
       <View style={styles.control}>
-        <Text style={styles.label}>Question</Text>
+        <Text style={styles.label}>
+          Question{"  "}
+          {questionIsInvalid && <Text style={styles.error}>requried</Text>}
+        </Text>
         <TextInput
           value={questionText}
           onChangeText={questionChangeHandler}
           style={styles.input}
           multiline
           numberOfLines={4}
+          ref={questionRef}
         />
       </View>
       <View style={styles.control}>
-        <Text style={styles.label}>Answer</Text>
+        <Text style={styles.label}>
+          Answer{"  "}
+          {answerIsInvalid && <Text style={styles.error}>requried</Text>}
+        </Text>
         <TextInput
           value={answerText}
           onChangeText={answerChangeHandler}
           style={styles.input}
           multiline
           numberOfLines={4}
+          ref={answerRef}
         />
       </View>
 
@@ -114,4 +140,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
+  error: { color: AllColors.red400, fontWeight: "normal", fontSize: 14 },
 });

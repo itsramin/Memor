@@ -1,4 +1,5 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { AllColors } from "../UI/AllColors";
 import CardItem from "./CardItem";
 
 const CardList = ({ cards }) => {
@@ -13,13 +14,13 @@ const CardList = ({ cards }) => {
     );
   };
 
-  if (cards.length === 0) {
-    return (
-      <View>
-        <Text>No Cards</Text>
-      </View>
-    );
-  }
+  // if (cards.length === 0) {
+  //   return (
+  //     <View style={styles.screen}>
+  //       <Text style={styles.text}>No Cards yet</Text>
+  //     </View>
+  //   );
+  // }
   return (
     <FlatList
       data={cards}
@@ -30,3 +31,7 @@ const CardList = ({ cards }) => {
 };
 
 export default CardList;
+const styles = StyleSheet.create({
+  screen: { flex: 1, alignItems: "center", justifyContent: "center" },
+  text: { fontSize: 20, color: AllColors.primary400 },
+});

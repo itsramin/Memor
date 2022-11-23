@@ -9,12 +9,20 @@ import {
 } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
+import * as DocumentPicker from "expo-document-picker";
+import Papa from "papaparse";
+
+// import { readFile } from "react-native-fs";
+// import { readRemoteFile } from "react-native-csv";
+// import csv from "csvtojson";
 
 const SetOverviewScreen = ({ route, navigation }) => {
+  // const csv = require("csvtojson");
   const isFocused = useIsFocused();
   const { setId } = route.params;
   const [setName, setSetName] = useState();
   const [cards, setCards] = useState([]);
+  // const [importedFile, setImportedFile] = useState();
 
   useEffect(() => {
     const fetchHandler = async () => {
@@ -45,25 +53,58 @@ const SetOverviewScreen = ({ route, navigation }) => {
       ]
     );
   };
-  const addNewCardHandler = async () => {
+  const addNewCardHandler = () => {
     navigation.navigate("CardFormScreen", { setId });
   };
   const viewHandler = async () => {
     navigation.navigate("CardListScreen", { setId, setName });
+  };
+
+  const importHandler = async () => {
+    const res = await DocumentPicker.getDocumentAsync();
+    // csv()
+    //   .fromFile(res.uri)
+    //   .then((jsonObj) => {
+    //     console.log(jsonObj);
+    //   });
+    // console.log(res.uri);
+    // setImportedFile(res.uri);
+    // const file = readFile(res.uri);
+    // Papa.parse(file, {
+    //   delimiter: ",",
+    //   complete: (results) => console.log(results),
+    // });
+    // console.log(res.uri);
+
+    // readRemoteFile(res.uri, {
+    //   // rest of config ...
+    //   download: true,
+    //   complete: (results) => {
+    //     console.log(results.data);
+    //   },
+    // });
   };
   return (
     <ScrollView>
       <SetInfo name={setName} cards={cards} />
       <View>
         <PrimaryButton
-          icon="edit"
-          title="View & edit Cards"
-          onPress={viewHandler}
-        />
-        <PrimaryButton
           icon="add"
           title="Add new card"
           onPress={addNewCardHandler}
+        />
+        {cards.length > 0 && (
+          <PrimaryButton
+            icon="edit"
+            title="View & edit Cards"
+            onPress={viewHandler}
+          />
+        )}
+
+        <PrimaryButton
+          icon="add"
+          title="Import cards"
+          onPress={importHandler}
         />
         <PrimaryButton
           icon="delete"

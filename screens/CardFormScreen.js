@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { Alert, View } from "react-native";
+import { Alert } from "react-native";
 import CardFormItem from "../components/CardFormItem";
 import { MaterialIcons } from "@expo/vector-icons";
 import { dbDeleteCard } from "../store/database";
@@ -37,14 +37,12 @@ const CardFormScreen = ({ route, navigation }) => {
     }
   }, []);
   return (
-    <View>
-      <CardFormItem
-        setId={setId}
-        cardId={cardId}
-        answer={answer}
-        question={question}
-      />
-    </View>
+    <CardFormItem
+      setId={setId}
+      cardId={cardId}
+      answer={answer}
+      question={question}
+    />
   );
 };
 
