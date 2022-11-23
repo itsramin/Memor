@@ -1,23 +1,33 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { ScrollView, View, Alert } from "react-native";
 import SetInfo from "../components/SetInfo";
-import { dbDeleteSet, dbFetchSetName } from "../store/database";
+import {
+  dbDeleteSet,
+  dbFetchSetName,
+  dbFetchAllCards,
+} from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 
 const SetOverviewScreen = ({ route, navigation }) => {
+  const isFocused = useIsFocused();
   const { setId } = route.params;
-  const [curSetName, setCurSetName] = useState();
+  const [setName, setSetName] = useState();
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     const fetchHandler = async () => {
-      const setName = await dbFetchSetName(setId);
-      setCurSetName(setName);
-    };
-    fetchHandler();
+      const targetSetName = await dbFetchSetName(setId);
+      setSetName(targetSetName);
 
-    navigation.setOptions({ title: curSetName });
-  }, [curSetName]);
+      const targetCards = await dbFetchAllCards(setId);
+      setCards(targetCards);
+    };
+    if (isFocused) {
+      fetchHandler();
+    }
+  }, [setId, isFocused]);
 
   const deleteSetHandler = () => {
     Alert.alert(
@@ -39,11 +49,11 @@ const SetOverviewScreen = ({ route, navigation }) => {
     navigation.navigate("CardFormScreen", { setId });
   };
   const viewHandler = async () => {
-    navigation.navigate("CardListScreen", { setId });
+    navigation.navigate("CardListScreen", { setId, setName });
   };
   return (
     <ScrollView>
-      <SetInfo name={curSetName} />
+      <SetInfo name={setName} cards={cards} />
       <View>
         <PrimaryButton
           icon="edit"

@@ -86,6 +86,7 @@ export default function App() {
           <Stack.Screen
             name="SetOverviewScreen"
             component={SetOverviewScreen}
+            options={{ title: "Overview" }}
           />
           <Stack.Screen
             name="CardFormScreen"

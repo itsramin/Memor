@@ -1,6 +1,8 @@
 import * as SQLite from "expo-sqlite";
 
 const database = SQLite.openDatabase("allSets.db");
+
+// init functions
 export function initSets() {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
@@ -48,6 +50,7 @@ export function initCards() {
   return promise;
 }
 
+// new or update functions
 export function dbNewSet(name) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
@@ -67,7 +70,83 @@ export function dbNewSet(name) {
 
   return promise;
 }
+export function dbAddCard(card) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `INSERT INTO cards (set_id, question , answer) VALUES
+        (?,?,?)`,
+        [card.setId, card.question, card.answer],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
 
+  return promise;
+}
+export function dbUpdateCard(card) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET question = ?, answer = ? WHERE card_id = ? ",
+        [card.question, card.answer, card.cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+
+// delete function
+export function dbDeleteSet(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM sets WHERE set_id = ?;`,
+        [id],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbDeleteCard(cardId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM cards WHERE card_id = ?;`,
+        [cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+
+// fetch data
 export function dbFetchAllsets() {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
@@ -92,7 +171,6 @@ export function dbFetchAllsets() {
 
   return promise;
 }
-
 export function dbFetchSetName(id) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
@@ -102,44 +180,6 @@ export function dbFetchSetName(id) {
         (_, result) => {
           // console.log(result.rows._array[0].set_name);
           resolve(result.rows._array[0].set_name);
-        },
-        (_, error) => {
-          reject(error);
-        }
-      );
-    });
-  });
-
-  return promise;
-}
-export function dbDeleteSet(id) {
-  const promise = new Promise((resolve, reject) => {
-    database.transaction((tx) => {
-      tx.executeSql(
-        `DELETE FROM sets WHERE set_id = ?;`,
-        [id],
-        (_, result) => {
-          resolve(result);
-        },
-        (_, error) => {
-          reject(error);
-        }
-      );
-    });
-  });
-
-  return promise;
-}
-export function dbAddCard(card) {
-  const promise = new Promise((resolve, reject) => {
-    database.transaction((tx) => {
-      tx.executeSql(
-        `INSERT INTO cards (set_id, question , answer) VALUES
-        (?,?,?)`,
-        [card.setId, card.question, card.answer],
-        (_, result) => {
-          resolve(result);
-          console.log(result);
         },
         (_, error) => {
           reject(error);
@@ -169,42 +209,6 @@ export function dbFetchAllCards(id) {
           }
 
           resolve(cards);
-        },
-        (_, error) => {
-          reject(error);
-        }
-      );
-    });
-  });
-
-  return promise;
-}
-export function dbDeleteCard(cardId) {
-  const promise = new Promise((resolve, reject) => {
-    database.transaction((tx) => {
-      tx.executeSql(
-        `DELETE FROM cards WHERE card_id = ?;`,
-        [cardId],
-        (_, result) => {
-          resolve(result);
-        },
-        (_, error) => {
-          reject(error);
-        }
-      );
-    });
-  });
-
-  return promise;
-}
-export function dbUpdateCard(card) {
-  const promise = new Promise((resolve, reject) => {
-    database.transaction((tx) => {
-      tx.executeSql(
-        "UPDATE cards SET question = ?, answer = ? WHERE card_id = ? ",
-        [card.question, card.answer, card.cardId],
-        (_, result) => {
-          resolve(result);
         },
         (_, error) => {
           reject(error);

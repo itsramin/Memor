@@ -3,7 +3,7 @@ import { AllColors } from "../UI/AllColors";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-const SetInfo = ({ name }) => {
+const SetInfo = ({ name, cards }) => {
   return (
     <View style={styles.infoBox}>
       <View style={styles.row}>
@@ -16,14 +16,12 @@ const SetInfo = ({ name }) => {
           style={styles.editIcon}
         /> */}
       </View>
-      {/* <View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>All Cards</Text>
-      <Text style={styles.infoText}>
-        {targetCards.length + targetSet.dailyCards.length}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
+      <View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>All Cards</Text>
+          <Text style={styles.infoText}>{cards.length}</Text>
+        </View>
+        {/* <View style={styles.infoRow}>
       <Text style={styles.infoText}>Stage 1</Text>
       <Text style={styles.infoText}>
         {stageCounter(targetCards, [0, 1]) +
@@ -61,8 +59,8 @@ const SetInfo = ({ name }) => {
     <View style={styles.infoRow}>
       <Text style={styles.infoText}>Full Memorize</Text>
       <Text style={styles.infoText}>{fullMemorize}</Text>
-    </View>
-  </View> */}
+    </View> */}
+      </View>
       {/* <StageBar values={values} /> */}
     </View>
   );
