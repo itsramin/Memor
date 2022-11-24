@@ -107,6 +107,24 @@ export function dbUpdateCard(card) {
 
   return promise;
 }
+export function dbUpdateSetName(set) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE sets SET set_name = ? WHERE set_id = ?",
+        [set.newName, set.setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
 
 // delete function
 export function dbDeleteSet(id) {

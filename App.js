@@ -13,6 +13,7 @@ import { initSets, initCards } from "./store/database";
 import SetOverviewScreen from "./screens/SetOverviewScreen";
 import CardFormScreen from "./screens/CardFormScreen";
 import CardListScreen from "./screens/CardListScreen";
+import SetSettingsScreen from "./screens/SetSettingsScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -97,6 +98,11 @@ export default function App() {
             name="CardListScreen"
             component={CardListScreen}
             options={{ title: "Card list" }}
+          />
+          <Stack.Screen
+            name="SetSettingsScreen"
+            component={SetSettingsScreen}
+            options={{ title: "Set Settings" }}
           />
         </Stack.Navigator>
       </NavigationContainer>

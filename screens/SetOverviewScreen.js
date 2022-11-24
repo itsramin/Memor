@@ -10,6 +10,7 @@ import {
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 import * as DocumentPicker from "expo-document-picker";
+// import { MaterialIcons } from "@expo/vector-icons";
 import Papa from "papaparse";
 
 // import { readFile } from "react-native-fs";
@@ -37,24 +38,27 @@ const SetOverviewScreen = ({ route, navigation }) => {
     }
   }, [setId, isFocused]);
 
-  const deleteSetHandler = () => {
-    Alert.alert(
-      "Delete Set",
-      "Are you sure you want to delete this flashcard set?",
-      [
-        { text: "No", style: "cancel" },
-        {
-          text: "Yes",
-          onPress: async () => {
-            await dbDeleteSet(setId);
-            navigation.goBack();
-          },
-        },
-      ]
-    );
-  };
+  // const deleteSetHandler = () => {
+  //   Alert.alert(
+  //     "Delete Set",
+  //     "Are you sure you want to delete this flashcard set?",
+  //     [
+  //       { text: "No", style: "cancel" },
+  //       {
+  //         text: "Yes",
+  //         onPress: async () => {
+  //           await dbDeleteSet(setId);
+  //           navigation.goBack();
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
   const addNewCardHandler = () => {
     navigation.navigate("CardFormScreen", { setId });
+  };
+  const setSettingsHandler = () => {
+    navigation.navigate("SetSettingsScreen", { setId });
   };
   const viewHandler = async () => {
     navigation.navigate("CardListScreen", { setId, setName });
@@ -101,17 +105,22 @@ const SetOverviewScreen = ({ route, navigation }) => {
           />
         )}
 
-        <PrimaryButton
+        {/* <PrimaryButton
           icon="add"
           title="Import cards"
           onPress={importHandler}
-        />
+        /> */}
         <PrimaryButton
+          icon="tune"
+          title="Settings"
+          onPress={setSettingsHandler}
+        />
+        {/* <PrimaryButton
           icon="delete"
           title="Delete set"
           bgcolor={AllColors.red400}
           onPress={deleteSetHandler}
-        />
+        /> */}
       </View>
     </ScrollView>
   );
