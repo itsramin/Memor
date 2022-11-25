@@ -71,7 +71,10 @@ const SetOverviewScreen = ({ route, navigation }) => {
   };
 
   const importHandler = async () => {
-    const res = await DocumentPicker.getDocumentAsync({ type: "*/*" });
+    const res = await DocumentPicker.getDocumentAsync({
+      type: "text/comma-separated-values",
+    });
+    if (res.type === "cancel") return;
 
     const data = await FileSystem.readAsStringAsync(res.uri);
     // Papa.parse(data, {
@@ -90,6 +93,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
       await dbAddCard(card);
     });
     setLoadAgain((prev) => !prev);
+    Alert.alert("Great", "Import successfully done!");
     // console.log(convert);
     // readFile(res.uri).then((res) => {
     //   const wb = XLSX.read(res);
@@ -149,7 +153,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
         )}
 
         <PrimaryButton
-          icon="add"
+          icon="cloud-download"
           title="Import cards"
           onPress={importHandler}
         />

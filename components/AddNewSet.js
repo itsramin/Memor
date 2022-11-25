@@ -34,6 +34,7 @@ const AddNewSet = ({ blur }) => {
         onChangeText={nameChangeHandler}
         value={setName}
         ref={nameRef}
+        placeholder="Enter a name"
       />
       <PrimaryButton
         title="Add new set"
@@ -64,5 +65,6 @@ const styles = StyleSheet.create({
   nameInvalid: {
     borderBottomWidth: 2,
     borderBottomColor: AllColors.red400,
+    backgroundColor: AllColors.red100,
   },
 });
