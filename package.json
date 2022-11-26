@@ -35,7 +35,8 @@
     "react-native-web": "~0.18.7",
     "react-redux": "^8.0.5",
     "xlsx": "^0.18.5",
-    "expo-media-library": "~14.2.0"
+    "expo-media-library": "~14.2.0",
+    "expo-splash-screen": "~0.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

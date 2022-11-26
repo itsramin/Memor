@@ -9,7 +9,8 @@ export function initSets() {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS sets (
             set_id INTEGER PRIMARY KEY NOT NULL,
-            set_name TEXT NOT NULL
+            set_name TEXT NOT NULL,
+            last_memorize TEXT 
             );   
             `,
         [],
@@ -33,7 +34,9 @@ export function initCards() {
             card_id INTEGER PRIMARY KEY NOT NULL,
             set_id INTEGER NOT NULL,
             question TEXT NOT NULL,
-            answer TEXT NOT NULL
+            answer TEXT NOT NULL,
+            stage INTEGER NOT NULL,
+            memorize_status INTEGER NOT NULL
           );   
             `,
         [],
@@ -74,9 +77,9 @@ export function dbAddCard(card) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO cards (set_id, question , answer) VALUES
-        (?,?,?)`,
-        [card.setId, card.question, card.answer],
+        `INSERT INTO cards (set_id, question , answer, stage, memorize_status) VALUES
+        (?,?,?,?,?)`,
+        [card.setId, card.question, card.answer, 0, 0],
         (_, result) => {
           resolve(result);
         },
@@ -228,7 +231,54 @@ export function dbFetchSetName(id) {
 
   return promise;
 }
+export function dbFetchSetLastMemorize(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `SELECT last_memorize FROM sets WHERE set_id = ?`,
+        [id],
+        (_, result) => {
+          resolve(result.rows._array[0].last_memorize);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
 export function dbFetchAllCards(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `SELECT * FROM cards WHERE set_id = ?`,
+        [id],
+        (_, result) => {
+          const cards = [];
+
+          for (const dp of result.rows._array) {
+            cards.push({
+              cardId: dp.card_id,
+              question: dp.question,
+              answer: dp.answer,
+              setId: dp.set_id,
+            });
+          }
+
+          resolve(cards);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchMemorizeCards(id) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(

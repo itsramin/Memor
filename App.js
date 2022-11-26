@@ -1,34 +1,47 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StatusBar, StyleSheet, Text } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
 import AppLoading from "expo-app-loading";
 import SettingIcon from "./UI/SettingIcon";
-
+import * as SplashScreen from "expo-splash-screen";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { initSets, initCards } from "./store/database";
 import SetOverviewScreen from "./screens/SetOverviewScreen";
 import CardFormScreen from "./screens/CardFormScreen";
 import CardListScreen from "./screens/CardListScreen";
 import SetSettingsScreen from "./screens/SetSettingsScreen";
 import MemorizeScreen from "./screens/MemorizeScreen";
+import MemorzieSummary from "./screens/MemorizeSummary";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  // const [dbLoading, setDbLoading] = useState(false);
+  const [appReady, setAppReady] = useState(false);
   useEffect(() => {
-    initSets()
-      .then(() => {})
-      .catch((err) => console.log(err));
-    initCards()
-      .then(() => {})
-      .catch((err) => console.log(err));
+    const init = async () => {
+      try {
+        await initSets();
+        await initCards();
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setAppReady(true);
+      }
+    };
+    init();
   }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appReady]);
   const HomePage = () => {
     return (
       <BottomTab.Navigator
@@ -66,11 +79,15 @@ export default function App() {
     );
   };
 
+  if (!appReady) {
+    return null;
+  }
+
   return (
     <>
       <StatusBar style="light" />
-
-      <NavigationContainer>
+      {/* <View onLayout={onLayoutRootView}> */}
+      <NavigationContainer onReady={onLayoutRootView}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: { backgroundColor: AllColors.primary400 },
@@ -110,8 +127,14 @@ export default function App() {
             component={MemorizeScreen}
             options={{ title: "Memorize" }}
           />
+          <Stack.Screen
+            name="MemorizeSummary"
+            component={MemorzieSummary}
+            options={{ title: "Summary" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
+      {/* </View> */}
     </>
   );
 }

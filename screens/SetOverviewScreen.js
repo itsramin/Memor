@@ -2,7 +2,12 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { ScrollView, View, Alert, StyleSheet } from "react-native";
 import SetInfo from "../components/SetInfo";
-import { dbFetchSetName, dbFetchAllCards, dbAddCard } from "../store/database";
+import {
+  dbFetchSetName,
+  dbFetchAllCards,
+  dbAddCard,
+  dbFetchSetLastMemorize,
+} from "../store/database";
 
 import PrimaryButton from "../UI/PrimaryButton";
 import * as DocumentPicker from "expo-document-picker";
@@ -13,21 +18,37 @@ const SetOverviewScreen = ({ route, navigation }) => {
   const isFocused = useIsFocused();
   const { setId } = route.params;
   const [setName, setSetName] = useState();
+  const [lastMemorize, setLastMemorize] = useState();
   const [cards, setCards] = useState([]);
+  const [memorizeCards, setMemorizeCards] = useState([]);
   const [loadAgain, setLoadAgain] = useState(false);
+  const [memorizeAllow, setMemorizeAllow] = useState(false);
 
   useEffect(() => {
     const fetchHandler = async () => {
-      const targetSetName = await dbFetchSetName(setId);
-      setSetName(targetSetName);
+      try {
+        const targetSetName = await dbFetchSetName(setId);
+        setSetName(targetSetName);
 
-      const targetCards = await dbFetchAllCards(setId);
-      setCards(targetCards);
+        const targetCards = await dbFetchAllCards(setId);
+        setCards(targetCards);
+
+        const targetLastMemorize = await dbFetchSetLastMemorize(setId);
+        setLastMemorize(targetLastMemorize);
+      } catch (error) {
+        console.log(error);
+      }
     };
     if (isFocused) {
       fetchHandler();
     }
   }, [setId, isFocused, loadAgain]);
+
+  useEffect(() => {
+    if (lastMemorize !== new Date().toISOString().slice(0, 10)) {
+      setMemorizeAllow(true);
+    }
+  }, [lastMemorize]);
 
   const addNewCardHandler = () => {
     navigation.navigate("CardFormScreen", { setId });
@@ -36,7 +57,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
     navigation.navigate("SetSettingsScreen", { setId });
   };
   const MemorizeHandler = () => {
-    navigation.navigate("MemorizeScreen", { setId });
+    navigation.navigate("MemorizeScreen", { setId, cards });
   };
   const viewHandler = async () => {
     navigation.navigate("CardListScreen", { setId, setName });
@@ -211,11 +232,13 @@ const SetOverviewScreen = ({ route, navigation }) => {
             onPress={viewHandler}
           />
         )}
-        <PrimaryButton
-          icon="wb-sunny"
-          onPress={MemorizeHandler}
-          title="Memorize"
-        />
+        {memorizeAllow && (
+          <PrimaryButton
+            icon="wb-sunny"
+            onPress={MemorizeHandler}
+            title="Memorize"
+          />
+        )}
         <View style={styles.row}>
           <PrimaryButton
             icon="cloud-download"

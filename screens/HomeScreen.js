@@ -18,8 +18,13 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const fetchHandler = async () => {
-      const fetchedSets = await dbFetchAllsets();
-      setSetsList(fetchedSets);
+      try {
+        const fetchedSets = await dbFetchAllsets();
+
+        setSetsList(fetchedSets);
+      } catch (error) {
+        console.log("123", error);
+      }
     };
 
     fetchHandler();

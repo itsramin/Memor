@@ -20,7 +20,7 @@ const AddNewSet = ({ blur }) => {
 
     // onAddNewSet(setName);
     dbNewSet(setName);
-
+    nameRef.current.blur();
     setSetName("");
   };
 
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     color: AllColors.primary500,
     borderBottomWidth: 1,
     borderBottomColor: AllColors.primary400,
+    fontSize: 16,
   },
   nameInvalid: {
     borderBottomWidth: 2,
