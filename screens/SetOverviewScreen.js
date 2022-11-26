@@ -41,27 +41,14 @@ const SetOverviewScreen = ({ route, navigation }) => {
     }
   }, [setId, isFocused, loadAgain]);
 
-  // const deleteSetHandler = () => {
-  //   Alert.alert(
-  //     "Delete Set",
-  //     "Are you sure you want to delete this flashcard set?",
-  //     [
-  //       { text: "No", style: "cancel" },
-  //       {
-  //         text: "Yes",
-  //         onPress: async () => {
-  //           await dbDeleteSet(setId);
-  //           navigation.goBack();
-  //         },
-  //       },
-  //     ]
-  //   );
-  // };
   const addNewCardHandler = () => {
     navigation.navigate("CardFormScreen", { setId });
   };
   const setSettingsHandler = () => {
     navigation.navigate("SetSettingsScreen", { setId });
+  };
+  const MemorizeHandler = () => {
+    navigation.navigate("MemorizeScreen", { setId });
   };
   const viewHandler = async () => {
     navigation.navigate("CardListScreen", { setId, setName });
@@ -249,6 +236,11 @@ const SetOverviewScreen = ({ route, navigation }) => {
             onPress={viewHandler}
           />
         )}
+        <PrimaryButton
+          icon="wb-sunny"
+          onPress={MemorizeHandler}
+          title="Memorize"
+        />
         <View style={styles.row}>
           <PrimaryButton
             icon="cloud-download"
