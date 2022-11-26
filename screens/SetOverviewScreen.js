@@ -8,18 +8,6 @@ import PrimaryButton from "../UI/PrimaryButton";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { jsonToCSV } from "react-native-csv";
-// import { AllColors } from "../UI/AllColors";
-// import * as MediaLibrary from "expo-media-library";
-// import { MaterialIcons } from "@expo/vector-icons";
-// import Papa from "papaparse";
-// import { encode } from "../helper/helper";
-
-// import { readFile } from "react-native-fs";
-// import XLSX from "xlsx";
-
-// import { readFile } from "react-native-fs";
-// import { readRemoteFile } from "react-native-csv";
-// import csv from "csvtojson";
 
 const SetOverviewScreen = ({ route, navigation }) => {
   const isFocused = useIsFocused();
@@ -120,19 +108,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
     //   },
     // });
   };
-
-  // const verifyPermissions = async () => {
-  //   if (permissionResponse.status === "undetermined") {
-  //     const permissionResponse = await requestPermission();
-
-  //     return permissionResponse.granted;
-  //   }
-  //   if (permissionResponse.granted === "denied") {
-  //     Alert.alert("Error", "You should allow permissions");
-  //     return false;
-  //   }
-  //   return true;
-  // };
 
   const exportHandler = async () => {
     const data = cards.map((card) => {
