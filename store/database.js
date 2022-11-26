@@ -132,6 +132,26 @@ export function dbDeleteSet(id) {
     database.transaction((tx) => {
       tx.executeSql(
         `DELETE FROM sets WHERE set_id = ?;`,
+
+        [id],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbDeleteSetAllCards(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        `DELETE FROM cards WHERE set_id = ?;`,
+
         [id],
         (_, result) => {
           resolve(result);

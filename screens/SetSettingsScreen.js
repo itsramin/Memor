@@ -11,6 +11,7 @@ import {
   dbFetchSetName,
   dbDeleteSet,
   dbUpdateSetName,
+  dbDeleteSetAllCards,
 } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
@@ -41,7 +42,7 @@ const SetSettingsScreen = ({ route, navigation }) => {
           text: "Yes",
           onPress: async () => {
             await dbDeleteSet(setId);
-
+            await dbDeleteSetAllCards(setId);
             navigation.navigate("HomePage");
           },
         },
