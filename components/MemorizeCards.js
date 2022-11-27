@@ -1,6 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import {
+  dbStageDown,
+  dbStageUp,
+  dbUpdateMemorizeStatus,
+  dbUpdateTodayDone,
+} from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import IconButton from "../UI/IconButton";
 import CardFlipItem from "./CardFlipItem";
@@ -11,14 +17,18 @@ const MemorizeCards = ({ cards, setId }) => {
   const [correctNum, setCorrectNum] = useState(0);
   const [wrongNum, setWrongNum] = useState(0);
 
-  const responseHandler = (status) => {
+  const responseHandler = async (status) => {
     if (status === "yes") {
       setCorrectNum((prev) => prev + 1);
+      await dbStageUp(cards[curNum].cardId);
     } else {
       setWrongNum((prev) => prev + 1);
+      await dbStageDown(cards[curNum].cardId);
     }
-
+    await dbUpdateMemorizeStatus(cards[curNum].cardId, 0);
     if (curNum === cardsCount - 1) {
+      await dbUpdateTodayDone(setId, 1);
+
       status === "yes"
         ? navigation.navigate("MemorizeSummary", {
             setId,

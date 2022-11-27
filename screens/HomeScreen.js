@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
 
         setSetsList(fetchedSets);
       } catch (error) {
-        console.log("123", error);
+        console.log(error);
       }
     };
 
@@ -37,6 +37,7 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => {
           navigation.navigate("SetOverviewScreen", {
             setId: itemData.item.setId,
+            lastMemorize: itemData.item.lastMemorize,
           });
         }}
       />

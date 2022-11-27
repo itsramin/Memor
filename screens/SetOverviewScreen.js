@@ -6,23 +6,35 @@ import {
   dbFetchSetName,
   dbFetchAllCards,
   dbAddCard,
-  dbFetchSetLastMemorize,
+  dbUpdateTodayDone,
+  dbFetchStageZero,
+  dbUpdateLastMemorize,
+  dbStageUp,
+  dbFetchStage,
+  dbUpdateMemorizeStatus,
+  dbStageUpAll,
+  dbFetchTodayDone,
+  dbFetchTodayCards,
+  dbResetMemorizeStatus,
 } from "../store/database";
 
 import PrimaryButton from "../UI/PrimaryButton";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { jsonToCSV } from "react-native-csv";
+import { AllColors } from "../UI/AllColors";
 
 const SetOverviewScreen = ({ route, navigation }) => {
   const isFocused = useIsFocused();
-  const { setId } = route.params;
+  const { setId, lastMemorize } = route.params;
   const [setName, setSetName] = useState();
-  const [lastMemorize, setLastMemorize] = useState();
+  const [curLastMemorize, setCurLastMemorize] = useState(lastMemorize);
   const [cards, setCards] = useState([]);
   const [memorizeCards, setMemorizeCards] = useState([]);
   const [loadAgain, setLoadAgain] = useState(false);
   const [memorizeAllow, setMemorizeAllow] = useState(false);
+  const today = new Date().toISOString().slice(0, 10);
+  const cardsValid = cards.length > 0;
 
   useEffect(() => {
     const fetchHandler = async () => {
@@ -32,9 +44,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
 
         const targetCards = await dbFetchAllCards(setId);
         setCards(targetCards);
-
-        const targetLastMemorize = await dbFetchSetLastMemorize(setId);
-        setLastMemorize(targetLastMemorize);
       } catch (error) {
         console.log(error);
       }
@@ -45,10 +54,58 @@ const SetOverviewScreen = ({ route, navigation }) => {
   }, [setId, isFocused, loadAgain]);
 
   useEffect(() => {
-    if (lastMemorize !== new Date().toISOString().slice(0, 10)) {
-      setMemorizeAllow(true);
+    if (!cardsValid) return;
+
+    const newDay = async () => {
+      await dbUpdateTodayDone(setId, 0);
+      await dbResetMemorizeStatus(setId);
+      await dbUpdateLastMemorize({
+        date: today,
+        setId,
+      });
+      setCurLastMemorize(today);
+      const stageZero = await dbFetchStageZero(setId);
+
+      stageZero.forEach(async (card) => {
+        await dbStageUp(card.cardId);
+      });
+
+      const todayCards = await dbFetchStage(setId);
+
+      todayCards.forEach(async (card) => {
+        await dbUpdateMemorizeStatus(card.cardId, 1);
+      });
+
+      await dbStageUpAll(setId);
+      setLoadAgain((prev) => !prev);
+      // setMemorizeCards(todayCards);
+      // setMemorizeAllow(true);
+      console.log("this is a new day");
+    };
+
+    if (curLastMemorize !== today) {
+      newDay();
     }
-  }, [lastMemorize]);
+  }, [curLastMemorize, today, isFocused, cardsValid]);
+
+  useEffect(() => {
+    if (!cardsValid) return;
+
+    const fetchh = async () => {
+      const todayCards = await dbFetchTodayCards(setId);
+      setMemorizeCards(todayCards);
+      const isDone = await dbFetchTodayDone(setId);
+
+      if (isDone === 0) {
+        setMemorizeAllow(true);
+      } else {
+        setMemorizeAllow(false);
+      }
+    };
+    if (isFocused) {
+      fetchh();
+    }
+  }, [cardsValid, isFocused, loadAgain]);
 
   const addNewCardHandler = () => {
     navigation.navigate("CardFormScreen", { setId });
@@ -57,9 +114,11 @@ const SetOverviewScreen = ({ route, navigation }) => {
     navigation.navigate("SetSettingsScreen", { setId });
   };
   const MemorizeHandler = () => {
-    navigation.navigate("MemorizeScreen", { setId, cards });
+    if (!memorizeAllow) return;
+    navigation.navigate("MemorizeScreen", { setId, cards: memorizeCards });
   };
-  const viewHandler = async () => {
+  const viewHandler = () => {
+    if (!cardsValid) return;
     navigation.navigate("CardListScreen", { setId, setName });
   };
 
@@ -150,7 +209,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
       )
         .then(async (uri) => {
           await FileSystem.StorageAccessFramework.writeAsStringAsync(uri, CSV);
-          alert("Grea", "Export Successfully");
+          Alert.alert("Great", "Export Successfully");
         })
         .catch((e) => {});
     } catch (e) {
@@ -225,20 +284,25 @@ const SetOverviewScreen = ({ route, navigation }) => {
           title="Add new card"
           onPress={addNewCardHandler}
         />
-        {cards.length > 0 && (
-          <PrimaryButton
-            icon="edit"
-            title="View & edit Cards"
-            onPress={viewHandler}
-          />
-        )}
-        {memorizeAllow && (
-          <PrimaryButton
-            icon="wb-sunny"
-            onPress={MemorizeHandler}
-            title="Memorize"
-          />
-        )}
+
+        <PrimaryButton
+          icon="edit"
+          title="View & edit Cards"
+          onPress={viewHandler}
+          bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey200}
+        />
+
+        <PrimaryButton
+          icon="wb-sunny"
+          onPress={MemorizeHandler}
+          title="Memorize"
+          bgcolor={
+            cardsValid && memorizeAllow
+              ? AllColors.primary400
+              : AllColors.grey200
+          }
+        />
+
         <View style={styles.row}>
           <PrimaryButton
             icon="cloud-download"
@@ -250,6 +314,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
             icon="cloud-upload"
             title="Export cards"
             onPress={exportHandler}
+            bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey200}
             style={styles.btn}
           />
         </View>

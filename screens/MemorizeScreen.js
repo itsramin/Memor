@@ -3,6 +3,7 @@ import MemorizeCards from "../components/MemorizeCards";
 
 const MemorizeScreen = ({ route, navigation }) => {
   const { setId, cards } = route.params;
+  console.log(cards);
   return <MemorizeCards cards={cards} setId={setId} />;
 };
 

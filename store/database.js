@@ -10,7 +10,8 @@ export function initSets() {
         `CREATE TABLE IF NOT EXISTS sets (
             set_id INTEGER PRIMARY KEY NOT NULL,
             set_name TEXT NOT NULL,
-            last_memorize TEXT 
+            last_memorize TEXT,
+            today_done INTEGER
             );   
             `,
         [],
@@ -53,13 +54,12 @@ export function initCards() {
   return promise;
 }
 
-// new or update functions
+// new functions
 export function dbNewSet(name) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `INSERT INTO sets (set_name) VALUES
-        (?)`,
+        "INSERT INTO sets (set_name,today_done) VALUES (?,0)",
         [name],
         (_, result) => {
           resolve(result);
@@ -92,6 +92,8 @@ export function dbAddCard(card) {
 
   return promise;
 }
+
+// update functions
 export function dbUpdateCard(card) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
@@ -116,6 +118,134 @@ export function dbUpdateSetName(set) {
       tx.executeSql(
         "UPDATE sets SET set_name = ? WHERE set_id = ?",
         [set.newName, set.setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbUpdateLastMemorize(set) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE sets SET last_memorize = ? WHERE set_id = ?",
+        [set.date, set.setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbUpdateMemorizeStatus(cardId, status) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET memorize_status = ? WHERE card_id = ?",
+        [status, cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbUpdateTodayDone(setId, status) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE sets SET today_done = ? WHERE set_id = ?",
+        [status, setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbResetMemorizeStatus(setId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET memorize_status = 0 WHERE set_id = ?",
+        [setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+
+// stage changes
+export function dbStageUp(cardId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET stage = stage + 1 WHERE card_id = ?",
+        [cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbStageUpAll(setId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET stage = stage + 1 WHERE memorize_status = 0 AND set_id = ? AND stage > 0",
+        [setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbStageDown(cardId) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET stage = 1 WHERE card_id = ?",
+        [cardId],
         (_, result) => {
           resolve(result);
         },
@@ -198,7 +328,11 @@ export function dbFetchAllsets() {
           const sets = [];
 
           for (const dp of result.rows._array) {
-            sets.push({ setId: dp.set_id, setName: dp.set_name });
+            sets.push({
+              setId: dp.set_id,
+              setName: dp.set_name,
+              lastMemorize: dp.last_memorize,
+            });
           }
 
           resolve(sets);
@@ -264,6 +398,8 @@ export function dbFetchAllCards(id) {
               question: dp.question,
               answer: dp.answer,
               setId: dp.set_id,
+              stage: dp.stage,
+              memorizeStatus: dp.memorize_status,
             });
           }
 
@@ -278,11 +414,11 @@ export function dbFetchAllCards(id) {
 
   return promise;
 }
-export function dbFetchMemorizeCards(id) {
+export function dbFetchStageZero(id) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        `SELECT * FROM cards WHERE set_id = ?`,
+        "SELECT * FROM cards WHERE set_id = ? AND memorize_status = 0 AND stage = 0 LIMIT 2",
         [id],
         (_, result) => {
           const cards = [];
@@ -293,6 +429,106 @@ export function dbFetchMemorizeCards(id) {
               question: dp.question,
               answer: dp.answer,
               setId: dp.set_id,
+              stage: dp.stage,
+              memorizeStatus: dp.memorize_status,
+            });
+          }
+
+          resolve(cards);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchStage(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM cards WHERE set_id = ? AND stage IN (1, 3, 7, 15, 30)",
+        [id],
+        (_, result) => {
+          const cards = [];
+
+          for (const dp of result.rows._array) {
+            cards.push({
+              cardId: dp.card_id,
+              question: dp.question,
+              answer: dp.answer,
+              setId: dp.set_id,
+              stage: dp.stage,
+              memorizeStatus: dp.memorize_status,
+            });
+          }
+
+          resolve(cards);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchStageCount(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT COUNT(card_id) FROM cards WHERE set_id = ? AND memorize_status = 1",
+        [id],
+        (_, result) => {
+          resolve(Object.values(result.rows._array[0])[0]);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchTodayDone(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT today_done FROM sets WHERE set_id = ?",
+        [id],
+        (_, result) => {
+          resolve(Object.values(result.rows._array[0])[0]);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchTodayCards(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM cards WHERE set_id = ? AND memorize_status=1",
+        [id],
+        (_, result) => {
+          const cards = [];
+
+          for (const dp of result.rows._array) {
+            cards.push({
+              cardId: dp.card_id,
+              question: dp.question,
+              answer: dp.answer,
+              setId: dp.set_id,
+              stage: dp.stage,
+              memorizeStatus: dp.memorize_status,
             });
           }
 
