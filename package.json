@@ -10,21 +10,16 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.0",
-    "@react-native-community/datetimepicker": "6.2.0",
     "@react-navigation/bottom-tabs": "^6.4.0",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
-    "@reduxjs/toolkit": "^1.9.0",
     "csvtojson": "^2.0.10",
     "expo": "~46.0.16",
-    "expo-app-loading": "~2.1.0",
-    "expo-document-picker": "~10.3.0",
     "expo-file-system": "~14.1.0",
-    "expo-font": "~10.2.0",
-    "expo-linear-gradient": "~11.4.0",
+    "expo-media-library": "~14.2.0",
+    "expo-splash-screen": "~0.16.2",
     "expo-sqlite": "~10.3.0",
     "expo-status-bar": "~1.4.0",
-    "papaparse": "^5.3.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.6",
@@ -32,11 +27,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
-    "react-native-web": "~0.18.7",
-    "react-redux": "^8.0.5",
-    "xlsx": "^0.18.5",
-    "expo-media-library": "~14.2.0",
-    "expo-splash-screen": "~0.16.2"
+    "react-native-web": "~0.18.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
