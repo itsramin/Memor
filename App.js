@@ -4,7 +4,7 @@ import { StatusBar, StyleSheet, Text, View } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
-import AppLoading from "expo-app-loading";
+
 import SettingIcon from "./UI/SettingIcon";
 import * as SplashScreen from "expo-splash-screen";
 import { MaterialIcons } from "@expo/vector-icons";
