@@ -1,13 +1,18 @@
 import { View, StyleSheet, Text } from "react-native";
 import { AllColors } from "../UI/AllColors";
-import { getLevelsArr } from "../helper/helper";
+import { getLevelsArr, getSetProgress } from "../helper/helper";
 
 const SetInfo = ({ name, cards }) => {
   const levelsArr = getLevelsArr(cards);
   return (
     <View style={styles.infoBox}>
-      <View style={styles.row}>
-        <Text style={styles.infoTitle}>{name}</Text>
+      <View style={styles.titleBox}>
+        <View style={styles.titleView}>
+          <Text style={styles.titleText}>{name}</Text>
+        </View>
+        <View style={styles.progressView}>
+          <Text style={styles.progressText}>%{getSetProgress(levelsArr)}</Text>
+        </View>
       </View>
       <View>
         <View style={styles.infoRow}>
@@ -50,7 +55,7 @@ const SetInfo = ({ name, cards }) => {
 
 export default SetInfo;
 const styles = StyleSheet.create({
-  row: {
+  titleBox: {
     flexDirection: "row",
     alignItems: "baseline",
     justifyContent: "center",
@@ -70,12 +75,13 @@ const styles = StyleSheet.create({
     maxWidth: 400,
     marginVertical: 16,
   },
-  infoTitle: {
+  titleView: { flex: 1 },
+  titleText: {
     color: AllColors.primary500,
     fontWeight: "bold",
     fontSize: 26,
     marginBottom: 15,
-    textAlign: "center",
+    // textAlign: "center",
   },
   infoRow: {
     flexDirection: "row",
@@ -96,5 +102,16 @@ const styles = StyleSheet.create({
   },
   infoText: {
     color: AllColors.primary400,
+  },
+  progressView: {
+    backgroundColor: AllColors.green400,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginLeft: 16,
+  },
+  progressText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

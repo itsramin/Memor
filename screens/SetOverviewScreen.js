@@ -96,7 +96,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
       setMemorizeCards(todayCards);
       const isDone = await dbFetchTodayDone(setId);
 
-      if (isDone === 0) {
+      if (isDone === 0 && todayCards.length > 0) {
         setMemorizeAllow(true);
       } else {
         setMemorizeAllow(false);
@@ -195,7 +195,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
           icon="edit"
           title="View & edit Cards"
           onPress={viewHandler}
-          bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey200}
+          bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey300}
         />
 
         <PrimaryButton
@@ -205,7 +205,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
           bgcolor={
             cardsValid && memorizeAllow
               ? AllColors.primary400
-              : AllColors.grey200
+              : AllColors.grey300
           }
         />
 
@@ -220,7 +220,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
             icon="cloud-upload"
             title="Export cards"
             onPress={exportHandler}
-            bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey200}
+            bgcolor={cardsValid ? AllColors.primary400 : AllColors.grey300}
             style={styles.btn}
           />
         </View>
