@@ -11,13 +11,6 @@ const MemorzieSummary = ({ route, navigation }) => {
   };
   return (
     <View style={styles.screen}>
-      {/* {wrongNum === 0 && (
-    <View style={styles.stageView}>
-      <MaterialIcons name="done-all" color={AllColors.green500} size={20} />
-      <Text style={styles.stageText}>Stage {stage} complete!</Text>
-    </View>
-  )} */}
-
       <View style={styles.summaryView}>
         <Text style={styles.title}>Summary</Text>
         <View style={styles.summaryRow}>
@@ -61,12 +54,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 10,
     paddingBottom: 10,
-    borderBottomColor: AllColors.primary500,
+    borderBottomColor: AllColors.primary400,
     paddingHorizontal: 40,
     borderBottomWidth: 2,
   },
   summaryView: {
-    // backgroundColor: AllColors.primary100,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
