@@ -1,10 +1,10 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { AllColors } from "./AllColors";
 
 const ProgressBar = ({ progress }) => {
   return (
     <View style={styles.outer}>
-      <View style={[styles.inner, { width: `${progress}%` }]}></View>
+      <View style={[styles.inner, { width: `${progress * 100}%` }]}></View>
     </View>
   );
 };
@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginVertical: 10,
     height: 10,
+    width: "100%",
   },
   inner: {
     backgroundColor: AllColors.green400,

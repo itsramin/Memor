@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     textAlign: "center",
-    color: AllColors.primary500,
+    color: AllColors.primary400,
     fontSize: 20,
     marginBottom: 10,
     paddingBottom: 10,
-    borderBottomColor: AllColors.primary400,
+    borderBottomColor: AllColors.grey200,
     paddingHorizontal: 40,
     borderBottomWidth: 2,
   },

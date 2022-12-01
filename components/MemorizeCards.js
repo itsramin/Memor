@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import {
   dbStageDown,
   dbStageUp,
@@ -9,6 +9,7 @@ import {
 } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import IconButton from "../UI/IconButton";
+import ProgressBar from "../UI/ProgressBar";
 import CardFlipItem from "./CardFlipItem";
 const MemorizeCards = ({ cards, setId }) => {
   const navigation = useNavigation();
@@ -17,6 +18,7 @@ const MemorizeCards = ({ cards, setId }) => {
   const [correctNum, setCorrectNum] = useState(0);
   const [wrongNum, setWrongNum] = useState(0);
 
+  const progress = (curNum + 1) / cardsCount;
   const responseHandler = async (status) => {
     if (status === "yes") {
       setCorrectNum((prev) => prev + 1);
@@ -48,7 +50,12 @@ const MemorizeCards = ({ cards, setId }) => {
 
   return (
     <View style={styles.screen}>
-      <View></View>
+      <View style={styles.progressView}>
+        <ProgressBar progress={progress} />
+        <Text style={styles.progressLabel}>
+          {curNum + 1} of {cardsCount}
+        </Text>
+      </View>
       <View>
         <CardFlipItem card={cards[curNum]} />
       </View>
@@ -75,5 +82,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  progressView: {
+    alignItems: "center",
+  },
+  progressLabel: {
+    color: AllColors.primary400,
   },
 });
