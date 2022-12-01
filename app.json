@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "first-app",
+    "name": "Memor",
     "slug": "first-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,23 +10,22 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2B4D9D"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#2B4D9D"
       },
-      "package": "com.rgon299.firstapp"
+      "package": "com.rgon299.firstapp",
+      "android.enableDangerousExperimentalLeanBuilds": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

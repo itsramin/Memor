@@ -86,7 +86,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
   },
-  noSetText: { textAlign: "center", fontSize: 18, marginVertical: 8 },
+  noSetText: {
+    textAlign: "center",
+    fontSize: 18,
+    marginVertical: 8,
+    color: AllColors.primary400,
+  },
   allSetTitle: {
     color: AllColors.primary500,
     fontSize: 26,

@@ -2,7 +2,7 @@ export const AllColors = {
   primary500: "#141a6d",
   primary400: "#2B4D9D",
   primary300: "#95ABD0",
-  primary200: "#BDCCDA",
+  primary200: "#cedafa",
   primary100: "#dae3fa",
   green500: "#0a502d",
   green400: "#127443",

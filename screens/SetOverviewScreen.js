@@ -129,71 +129,36 @@ const SetOverviewScreen = ({ route, navigation }) => {
     if (res.type === "cancel") return;
 
     const data = await FileSystem.readAsStringAsync(res.uri);
-    // Papa.parse(data, {
-    //   delimiter: ",",
-    //   complete: (results) => console.log(results),
-    // });
+
     const convertArr = data
       .split(/\r?\n|\r|\n/g)
       .filter((el) => el)
       .map((item) => {
         const cardItem = item.split(",");
-        return { question: cardItem[0], answer: cardItem[1], setId };
-      })
-      .slice(1);
+        return {
+          question: cardItem[0].replace(/"/g, ""),
+          answer: cardItem[1].replace(/"/g, ""),
+          setId,
+        };
+      });
 
-    convertArr.forEach(async (card) => {
-      await dbAddCard(card);
-    });
-    setLoadAgain((prev) => !prev);
-    Alert.alert("Great", "Import successfully done!");
-    // console.log(convert);
-    // readFile(res.uri).then((res) => {
-    //   const wb = XLSX.read(res);
-    //   const wsName = wb.SheetNames[0];
-    //   const ws = wb.Sheets[wsName];
-    //   const data = XLSX.utils.sheet_add_json(ws, { header: 1 });
-    //   for (let i = 1; i < data.length; i++) {
-    //     array.push({ question: data[i][0], answer: data[i][1] });
-    //   }
-    //   console.log(array);
-    // });
-    // csv()
-    //   .fromFile(res.uri)
-    //   .then((jsonObj) => {
-    //     console.log(jsonObj);
-    //   });
-    // console.log(res.uri);
-    // setImportedFile(res.uri);
-    // const file = readFile(res.uri);
-    // Papa.parse(file, {
-    //   delimiter: ",",
-    //   complete: (results) => console.log(results),
-    // });
-
-    // const correctUri = encode(res.uri);
-    // console.log(res);
-    // const file = res.uri.slice(7);
-    // Papa.parse(res.uri, {
-    //   download: true,
-    //   delimiter: ",",
-    //   complete: (results) => console.log(results),
-    // });
-
-    // readRemoteFile(res.uri, {
-    //   // rest of config ...
-    //   download: true,
-    //   complete: (results) => {
-    //     console.log(results.data);
-    //   },
-    // });
+    if (convertArr.length > 0) {
+      convertArr.forEach(async (card) => {
+        await dbAddCard(card);
+      });
+      setLoadAgain((prev) => !prev);
+      Alert.alert("Great", "Import successfully done!");
+    } else {
+      Alert.alert("Error", "Something went wrong. Try again!");
+    }
   };
 
   const exportHandler = async () => {
     const data = cards.map((card) => {
       return { question: card.question, answer: card.answer };
     });
-    const CSV = jsonToCSV(data);
+
+    const CSV = jsonToCSV(data).slice(jsonToCSV(data).indexOf("\n") + 1);
 
     const permissions =
       await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
@@ -215,65 +180,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
     } catch (e) {
       Alert.alert("Error", e.message);
     }
-    // let directoryUri = FileSystem.documentDirectory;
-
-    // let fileUri = directoryUri + "name.csv";
-    // console.log(fileUri);
-
-    // await FileSystem.writeAsStringAsync(fileUri, CSV);
-    // console.log(permissionResponse.status);
-    // const hasPermission = await verifyPermissions();
-    // if (!hasPermission) return;
-
-    // await FileSystem.writeAsStringAsync(fileUri, CSV, {
-    //   encoding: FileSystem.EncodingType.UTF8,
-    // });
-    // const asset = await MediaLibrary.createAssetAsync(fileUri);
-    // await MediaLibrary.createAlbumAsync("Download", asset, false);
-
-    //////////////////////////////
-
-    // if (permissionResponse.status === "undetermined") {
-    //   const permissionResponse = await requestPermission();
-    //   console.log(permissionResponse.approve);
-    //   if (permissionResponse.granted === "granted") {
-    //     hasPer = true;
-    //   }
-    // }
-    // if (!hasPer) return console.log("no permission");
-
-    // const { status } = await requestPermission();
-    // console.log(status);
-    // if (status === "granted") {
-    //   await FileSystem.writeAsStringAsync(fileUri, CSV, {
-    //     encoding: FileSystem.EncodingType.UTF8,
-    //   });
-    //   const asset = await MediaLibrary.createAssetAsync(fileUri);
-    //   await MediaLibrary.createAlbumAsync("Download", asset, false);
-    // }
-
-    // // Ask permission (if not granted)
-    // const perm = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-    // if (perm.status != "granted") {
-    //   console.log("Permission not Granted!");
-    //   return;
-    // }
-
-    // // Write the file to system
-    // FileSystem.writeAsStringAsync(fileUri, CSV);
-
-    // try {
-    //   const asset = await MediaLibrary.createAssetAsync(fileUri);
-    //   const album = await MediaLibrary.getAlbumAsync("forms");
-    //   console.log(album);
-    //   if (album == null) {
-    //     await MediaLibrary.createAlbumAsync("forms", asset, true);
-    //   } else {
-    //     await MediaLibrary.addAssetsToAlbumAsync([asset], album, true);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
   };
   return (
     <ScrollView>

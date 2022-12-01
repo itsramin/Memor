@@ -10,6 +10,8 @@ const CardList = ({ cards }) => {
         answer={itemData.item.answer}
         cardId={itemData.item.cardId}
         setId={itemData.item.setId}
+        stage={itemData.item.stage}
+        index={itemData.index + 1}
       />
     );
   };

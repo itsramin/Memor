@@ -85,7 +85,7 @@ export default function App() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {/* <View onLayout={onLayoutRootView}> */}
       <NavigationContainer onReady={onLayoutRootView}>
         <Stack.Navigator
