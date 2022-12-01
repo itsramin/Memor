@@ -1,5 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { getLevel } from "../helper/helper";
 
 import { AllColors } from "../UI/AllColors";
 
@@ -22,8 +23,8 @@ const CardItem = ({ question, answer, cardId, setId, index, stage }) => {
       <View style={styles.info}>
         <Text style={styles.index}>#{index}</Text>
         <View style={styles.stage}>
-          <Text style={styles.stageNum}>{stage}</Text>
-          <Text style={styles.stageLabel}>stage</Text>
+          <Text style={styles.stageNum}>{getLevel(stage)}</Text>
+          <Text style={styles.stageLabel}>Level</Text>
         </View>
       </View>
     </Pressable>

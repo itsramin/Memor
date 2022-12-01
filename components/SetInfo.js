@@ -1,67 +1,49 @@
 import { View, StyleSheet, Text } from "react-native";
 import { AllColors } from "../UI/AllColors";
-
-import { MaterialIcons } from "@expo/vector-icons";
+import { getLevelsArr } from "../helper/helper";
 
 const SetInfo = ({ name, cards }) => {
+  const levelsArr = getLevelsArr(cards);
   return (
     <View style={styles.infoBox}>
       <View style={styles.row}>
         <Text style={styles.infoTitle}>{name}</Text>
-        {/* <MaterialIcons
-          name="edit"
-          color={AllColors.grey200}
-          size={20}
-            onPress={nameIconHandler}
-          style={styles.editIcon}
-        /> */}
       </View>
       <View>
         <View style={styles.infoRow}>
           <Text style={styles.infoText}>All Cards</Text>
           <Text style={styles.infoText}>{cards.length}</Text>
         </View>
-        {/* <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Stage 1</Text>
-      <Text style={styles.infoText}>
-        {stageCounter(targetCards, [0, 1]) +
-          stageCounter(targetSet.dailyCards, [0, 1])}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Stage 2</Text>
-      <Text style={styles.infoText}>
-        {stageCounter(targetCards, [1, 3]) +
-          stageCounter(targetSet.dailyCards, [1, 3])}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Stage 3</Text>
-      <Text style={styles.infoText}>
-        {stageCounter(targetCards, [3, 7]) +
-          stageCounter(targetSet.dailyCards, [3, 7])}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Stage 4</Text>
-      <Text style={styles.infoText}>
-        {stageCounter(targetCards, [7, 15]) +
-          stageCounter(targetSet.dailyCards, [7, 15])}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Stage 5</Text>
-      <Text style={styles.infoText}>
-        {stageCounter(targetCards, [15, 30]) +
-          stageCounter(targetSet.dailyCards, [15, 30])}
-      </Text>
-    </View>
-    <View style={styles.infoRow}>
-      <Text style={styles.infoText}>Full Memorize</Text>
-      <Text style={styles.infoText}>{fullMemorize}</Text>
-    </View> */}
+
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Not review</Text>
+          <Text style={styles.infoText}>{levelsArr[0]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Level 1</Text>
+          <Text style={styles.infoText}>{levelsArr[1]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Level 2</Text>
+          <Text style={styles.infoText}>{levelsArr[2]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Level 3</Text>
+          <Text style={styles.infoText}>{levelsArr[3]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Level 4</Text>
+          <Text style={styles.infoText}>{levelsArr[4]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Level 5</Text>
+          <Text style={styles.infoText}>{levelsArr[5]}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoText}>Full Memorize</Text>
+          <Text style={styles.infoText}>{levelsArr[6]}</Text>
+        </View>
       </View>
-      {/* <StageBar values={values} /> */}
     </View>
   );
 };
