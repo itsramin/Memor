@@ -8,29 +8,44 @@ import {
   Alert,
 } from "react-native";
 import {
-  dbFetchSetName,
   dbDeleteSet,
   dbUpdateSetName,
   dbDeleteSetAllCards,
+  dbFetchSetSettings,
+  dbUpdateSetDailyCount,
 } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 const SetSettingsScreen = ({ route, navigation }) => {
   const { setId } = route.params;
-
+  const idFocused = useIsFocused();
   const [newName, setNewName] = useState("");
+  const [dailyCount, setDailyCount] = useState("");
 
   useEffect(() => {
     const fetchHandler = async () => {
-      const targetSetName = await dbFetchSetName(setId);
-      setNewName(targetSetName);
+      try {
+        const targetSet = await dbFetchSetSettings(setId);
+
+        setDailyCount(targetSet.daily_count.toString());
+        setNewName(targetSet.set_name);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    fetchHandler();
-  }, [setId]);
+
+    if (idFocused) {
+      fetchHandler();
+    }
+  }, [setId, idFocused]);
 
   const nameChangeHandler = (value) => {
     setNewName(value);
+  };
+  const dailyChangeHandler = (value) => {
+    setDailyCount(value);
   };
   const deleteSetHandler = () => {
     Alert.alert(
@@ -49,12 +64,23 @@ const SetSettingsScreen = ({ route, navigation }) => {
       ]
     );
   };
-  const saveSettingsHandler = async () => {
-    await dbUpdateSetName({ newName: newName, setId });
 
+  const saveSettingsHandler = async () => {
+    if (newName === "") {
+      Alert.alert("Error", "Set name can not be empty.");
+      return;
+    }
+    if (dailyCount === "" || dailyCount < 0 || isNaN(dailyCount)) {
+      Alert.alert("Error", "Daily cards must be an integer number.");
+      return;
+    }
+
+    await dbUpdateSetName({ newName, setId });
+    await dbUpdateSetDailyCount({ dailyCount, setId });
     navigation.goBack();
   };
   useLayoutEffect(() => {
+    // console.log("layout");
     navigation.setOptions({
       headerRight: ({ tintColor }) => {
         return (
@@ -73,10 +99,23 @@ const SetSettingsScreen = ({ route, navigation }) => {
       <View style={styles.control}>
         <Text style={styles.label}>Set name</Text>
         <TextInput
-          //   defaultValue={setName}
           value={newName}
           onChangeText={nameChangeHandler}
           style={styles.input}
+        />
+      </View>
+      <View style={styles.control}>
+        <Text style={styles.label}>Cards added daily</Text>
+        <Text style={styles.description}>
+          Amount of unseen cards added to memorize section everyday you open the
+          app.
+        </Text>
+
+        <TextInput
+          value={dailyCount}
+          onChangeText={dailyChangeHandler}
+          style={styles.input}
+          keyboardType="number-pad"
         />
       </View>
       <View style={styles.actions}>
@@ -100,7 +139,7 @@ const styles = StyleSheet.create({
     color: AllColors.primary500,
     fontWeight: "bold",
     fontSize: 16,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   input: {
     backgroundColor: AllColors.primary100,
@@ -111,4 +150,10 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   error: { color: AllColors.red400, fontWeight: "normal", fontSize: 14 },
+  description: {
+    color: AllColors.grey400,
+    fontSize: 13,
+    marginBottom: 6,
+    paddingHorizontal: 5,
+  },
 });

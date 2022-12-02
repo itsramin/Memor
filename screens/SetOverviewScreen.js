@@ -3,19 +3,19 @@ import { useEffect, useState } from "react";
 import { ScrollView, View, Alert, StyleSheet } from "react-native";
 import SetInfo from "../components/SetInfo";
 import {
-  dbFetchSetName,
   dbFetchAllCards,
   dbAddCard,
   dbUpdateTodayDone,
   dbFetchStageZero,
   dbUpdateLastMemorize,
   dbStageUp,
-  dbFetchStage,
+  dbFetchStageEnd,
   dbUpdateMemorizeStatus,
   dbStageUpAll,
   dbFetchTodayDone,
   dbFetchTodayCards,
   dbResetMemorizeStatus,
+  dbFetchSetSettings,
 } from "../store/database";
 
 import PrimaryButton from "../UI/PrimaryButton";
@@ -28,6 +28,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
   const isFocused = useIsFocused();
   const { setId, lastMemorize } = route.params;
   const [setName, setSetName] = useState();
+  const [dailyCount, setDailyCount] = useState();
   const [curLastMemorize, setCurLastMemorize] = useState(lastMemorize);
   const [cards, setCards] = useState([]);
   const [memorizeCards, setMemorizeCards] = useState([]);
@@ -39,8 +40,10 @@ const SetOverviewScreen = ({ route, navigation }) => {
   useEffect(() => {
     const fetchHandler = async () => {
       try {
-        const targetSetName = await dbFetchSetName(setId);
-        setSetName(targetSetName);
+        const targetSet = await dbFetchSetSettings(setId);
+
+        setDailyCount(targetSet.daily_count.toString());
+        setSetName(targetSet.set_name);
 
         const targetCards = await dbFetchAllCards(setId);
         setCards(targetCards);
@@ -56,7 +59,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (!cardsValid) return;
 
-    const newDay = async () => {
+    const newDay = async (daysPast) => {
       await dbUpdateTodayDone(setId, 0);
       await dbResetMemorizeStatus(setId);
       await dbUpdateLastMemorize({
@@ -64,34 +67,42 @@ const SetOverviewScreen = ({ route, navigation }) => {
         setId,
       });
       setCurLastMemorize(today);
-      const stageZero = await dbFetchStageZero(setId);
+
+      // stage up all cards depend on past days
+      for (let i = 0; i < daysPast; i++) {
+        await dbStageUpAll(setId);
+      }
+
+      // new cards
+      const stageZero = await dbFetchStageZero(setId, dailyCount);
 
       stageZero.forEach(async (card) => {
         await dbStageUp(card.cardId);
       });
 
-      const todayCards = await dbFetchStage(setId);
+      // from past cards
+      const todayCards = await dbFetchStageEnd(setId);
 
       todayCards.forEach(async (card) => {
         await dbUpdateMemorizeStatus(card.cardId, 1);
       });
 
-      await dbStageUpAll(setId);
+      // reload
       setLoadAgain((prev) => !prev);
-      // setMemorizeCards(todayCards);
-      // setMemorizeAllow(true);
-      console.log("this is a new day");
     };
 
     if (curLastMemorize !== today) {
-      newDay();
+      const daysPast =
+        (+new Date(today) - +new Date(curLastMemorize)) / (1000 * 60 * 60 * 24);
+
+      newDay(daysPast);
     }
   }, [curLastMemorize, today, isFocused, cardsValid]);
 
   useEffect(() => {
     if (!cardsValid) return;
 
-    const fetchh = async () => {
+    const fetchHandler = async () => {
       const todayCards = await dbFetchTodayCards(setId);
       setMemorizeCards(todayCards);
       const isDone = await dbFetchTodayDone(setId);
@@ -103,7 +114,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
       }
     };
     if (isFocused) {
-      fetchh();
+      fetchHandler();
     }
   }, [cardsValid, isFocused, loadAgain]);
 

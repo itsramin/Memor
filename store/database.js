@@ -11,7 +11,8 @@ export function initSets() {
             set_id INTEGER PRIMARY KEY NOT NULL,
             set_name TEXT NOT NULL,
             last_memorize TEXT,
-            today_done INTEGER
+            today_done INTEGER,
+            daily_count INTEGER
             );   
             `,
         [],
@@ -56,11 +57,13 @@ export function initCards() {
 
 // new functions
 export function dbNewSet(name) {
+  const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO sets (set_name,today_done) VALUES (?,0)",
-        [name],
+        "INSERT INTO sets (set_name,today_done,daily_count,last_memorize) VALUES (?,0,5,?)",
+        [name, yesterday],
         (_, result) => {
           resolve(result);
         },
@@ -118,6 +121,24 @@ export function dbUpdateSetName(set) {
       tx.executeSql(
         "UPDATE sets SET set_name = ? WHERE set_id = ?",
         [set.newName, set.setId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbUpdateSetDailyCount(set) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE sets SET daily_count = ? WHERE set_id = ?",
+        [set.dailyCount, set.setId],
         (_, result) => {
           resolve(result);
         },
@@ -208,7 +229,7 @@ export function dbStageUp(cardId) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "UPDATE cards SET stage = stage + 1 WHERE card_id = ?",
+        "UPDATE cards SET stage = stage + 1 WHERE card_id = ? ",
         [cardId],
         (_, result) => {
           resolve(result);
@@ -226,7 +247,7 @@ export function dbStageUpAll(setId) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "UPDATE cards SET stage = stage + 1 WHERE memorize_status = 0 AND set_id = ? AND stage > 0",
+        "UPDATE cards SET stage = stage + 1 WHERE set_id = ? AND stage NOT IN (0,1, 3, 7, 15, 30)",
         [setId],
         (_, result) => {
           resolve(result);
@@ -414,12 +435,12 @@ export function dbFetchAllCards(id) {
 
   return promise;
 }
-export function dbFetchStageZero(id) {
+export function dbFetchStageZero(id, dailyCount) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM cards WHERE set_id = ? AND memorize_status = 0 AND stage = 0 LIMIT 2",
-        [id],
+        "SELECT * FROM cards WHERE set_id = ? AND memorize_status = 0 AND stage = 0 LIMIT ?",
+        [id, dailyCount],
         (_, result) => {
           const cards = [];
 
@@ -445,7 +466,7 @@ export function dbFetchStageZero(id) {
 
   return promise;
 }
-export function dbFetchStage(id) {
+export function dbFetchStageEnd(id) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
@@ -502,6 +523,24 @@ export function dbFetchTodayDone(id) {
         [id],
         (_, result) => {
           resolve(Object.values(result.rows._array[0])[0]);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbFetchSetSettings(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM sets WHERE set_id = ?",
+        [id],
+        (_, result) => {
+          resolve(result.rows._array[0]);
         },
         (_, error) => {
           reject(error);
