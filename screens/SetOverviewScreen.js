@@ -130,7 +130,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
   };
   const viewHandler = () => {
     if (!cardsValid) return;
-    navigation.navigate("CardListScreen", { setId, setName });
+    navigation.navigate("CardListScreen", { setName, cards });
   };
 
   const importHandler = async () => {
@@ -192,6 +192,32 @@ const SetOverviewScreen = ({ route, navigation }) => {
       Alert.alert("Error", e.message);
     }
   };
+
+  // const fetch504Handler = async () => {
+  //   // console.log(cards);
+  //   const cards504 = cards.map((card) => {
+  //     return {
+  //       question: card.question,
+  //       answer: card.answer,
+  //       cardId: card.cardId,
+  //     };
+  //   });
+
+  //   const data = { name: "504 Words", cards: cards504 };
+  //   // console.log(data);
+
+  //   const res = await fetch(
+  //     "https://memor-7e6bf-default-rtdb.asia-southeast1.firebasedatabase.app/marketSets.json",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     }
+  //   );
+  //   console.log(res);
+  // };
   return (
     <ScrollView>
       <SetInfo name={setName} cards={cards} />
@@ -241,6 +267,11 @@ const SetOverviewScreen = ({ route, navigation }) => {
           title="Settings"
           onPress={setSettingsHandler}
         />
+        {/* <PrimaryButton
+          icon="tune"
+          title="fetch data"
+          onPress={fetch504Handler}
+        /> */}
       </View>
     </ScrollView>
   );

@@ -1,14 +1,14 @@
-import { useIsFocused } from "@react-navigation/native";
+// import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import CardList from "../components/CardList";
 import SearchCard from "../components/SearchCard";
-import { dbFetchAllCards } from "../store/database";
+// import { dbFetchAllCards } from "../store/database";
 
 const CardListScreen = ({ route, navigation }) => {
-  const isFocused = useIsFocused();
-  const { setId, setName } = route.params;
-  const [curCards, setCurCards] = useState([]);
+  // const isFocused = useIsFocused();
+  const { setName, cards } = route.params;
+  // const [curCards, setCurCards] = useState([]);
   const [filteredCards, setFilteredCards] = useState([]);
   const [blur, setBlur] = useState(false);
 
@@ -16,15 +16,15 @@ const CardListScreen = ({ route, navigation }) => {
     navigation.setOptions({ title: setName });
   }, []);
 
-  useEffect(() => {
-    const fetchHandler = async () => {
-      const cards = await dbFetchAllCards(setId);
-      setCurCards(cards);
-    };
-    if (isFocused) {
-      fetchHandler();
-    }
-  }, [isFocused]);
+  // useEffect(() => {
+  //   const fetchHandler = async () => {
+  //     const cards = await dbFetchAllCards(setId);
+  //     setCurCards(cards);
+  //   };
+  //   if (isFocused) {
+  //     fetchHandler();
+  //   }
+  // }, [isFocused]);
   const blurHandler = () => {
     setBlur((prev) => !prev);
   };
@@ -37,7 +37,7 @@ const CardListScreen = ({ route, navigation }) => {
     <TouchableWithoutFeedback onPress={blurHandler}>
       <View style={styles.screen}>
         <SearchCard
-          cards={curCards}
+          cards={cards}
           onFilterCards={filterCardsHandler}
           blur={blur}
         />

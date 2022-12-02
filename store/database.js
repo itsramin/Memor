@@ -12,7 +12,8 @@ export function initSets() {
             set_name TEXT NOT NULL,
             last_memorize TEXT,
             today_done INTEGER,
-            daily_count INTEGER
+            daily_count INTEGER,
+            market_id TEXT
             );   
             `,
         [],
@@ -56,14 +57,14 @@ export function initCards() {
 }
 
 // new functions
-export function dbNewSet(name) {
+export function dbNewSet(name, marketId = null) {
   const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
 
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "INSERT INTO sets (set_name,today_done,daily_count,last_memorize) VALUES (?,0,5,?)",
-        [name, yesterday],
+        "INSERT INTO sets (set_name,today_done,daily_count,last_memorize, market_id) VALUES (?,0,5,?,?)",
+        [name, yesterday, marketId],
         (_, result) => {
           resolve(result);
         },
@@ -76,13 +77,13 @@ export function dbNewSet(name) {
 
   return promise;
 }
-export function dbAddCard(card) {
+export function dbAddCard(setId, card) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
         `INSERT INTO cards (set_id, question , answer, stage, memorize_status) VALUES
         (?,?,?,?,?)`,
-        [card.setId, card.question, card.answer, 0, 0],
+        [setId, card.question, card.answer, 0, 0],
         (_, result) => {
           resolve(result);
         },
@@ -353,6 +354,7 @@ export function dbFetchAllsets() {
               setId: dp.set_id,
               setName: dp.set_name,
               lastMemorize: dp.last_memorize,
+              marketId: dp.market_id,
             });
           }
 

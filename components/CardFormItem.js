@@ -47,11 +47,10 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
       await dbUpdateCard(updateCard);
     } else {
       const newCard = {
-        setId,
         answer: answerText,
         question: questionText,
       };
-      await dbAddCard(newCard);
+      await dbAddCard(setId, newCard);
     }
     setQuestionText("");
     setAnswerText("");

@@ -52,7 +52,7 @@ const SetSettingsScreen = ({ route, navigation }) => {
       "Delete Set",
       "Are you sure you want to delete this flashcard set?",
       [
-        { text: "No", style: "cancel" },
+        { text: "No" },
         {
           text: "Yes",
           onPress: async () => {

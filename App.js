@@ -16,6 +16,7 @@ import CardListScreen from "./screens/CardListScreen";
 import SetSettingsScreen from "./screens/SetSettingsScreen";
 import MemorizeScreen from "./screens/MemorizeScreen";
 import MemorzieSummary from "./screens/MemorizeSummary";
+import MarketScreen from "./screens/MarketScreen";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,6 +48,7 @@ export default function App() {
       <BottomTab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarLabelPosition: "beside-icon",
           tabBarLabel: ({ focused, color }) => {
             return (
@@ -66,15 +68,16 @@ export default function App() {
             ),
           }}
         />
-        {/* <BottomTab.Screen
-          name="Explore"
+
+        <BottomTab.Screen
+          name="Market"
           component={MarketScreen}
           options={{
-            tabBarIcon: ({ focused, size, color }) => (
+            tabBarIcon: ({ size, color }) => (
               <MaterialIcons name="store" color={color} size={size} />
             ),
           }}
-        /> */}
+        />
       </BottomTab.Navigator>
     );
   };
@@ -86,7 +89,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="dark" />
-      
+
       <NavigationContainer onReady={onLayoutRootView}>
         <Stack.Navigator
           screenOptions={{

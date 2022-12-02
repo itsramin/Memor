@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { getLevel } from "../helper/helper";
 
@@ -7,7 +7,10 @@ import { AllColors } from "../UI/AllColors";
 const CardItem = ({ question, answer, cardId, setId, index, stage }) => {
   const navigation = useNavigation();
 
+  const route = useRoute();
+  const editable = route.params.editable;
   const pressCardHandler = () => {
+    if (!editable) return;
     navigation.navigate("CardFormScreen", { cardId, question, answer, setId });
   };
   return (
@@ -20,12 +23,15 @@ const CardItem = ({ question, answer, cardId, setId, index, stage }) => {
           <Text style={styles.text}>{answer}</Text>
         </View>
       </View>
+
       <View style={styles.info}>
         <Text style={styles.index}>#{index}</Text>
-        <View style={styles.stage}>
-          <Text style={styles.stageNum}>{getLevel(stage)}</Text>
-          <Text style={styles.stageLabel}>Level</Text>
-        </View>
+        {editable && (
+          <View style={styles.stage}>
+            <Text style={styles.stageNum}>{getLevel(stage)}</Text>
+            <Text style={styles.stageLabel}>Level</Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -59,6 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: AllColors.primary200,
     alignItems: "center",
     justifyContent: "space-around",
+    minWidth: 50,
   },
   index: { fontSize: 14, color: AllColors.primary400, marginVertical: 8 },
   stage: {

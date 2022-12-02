@@ -33,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
   const renderItemHandler = (itemData) => {
     return (
       <SetItem
-        set={itemData.item}
+        setName={itemData.item.setName}
         onPress={() => {
           navigation.navigate("SetOverviewScreen", {
             setId: itemData.item.setId,
