@@ -45,14 +45,9 @@ const MarketScreen = () => {
 
     const fetchUserSets = async () => {
       const fetchedUserSets = await dbFetchAllsets();
-      //   console.log(userSets);
-      //   const marketSetIdArr = [];
-      //   userSets.forEach((set) => {
-      //     marketSetIdArr.push(set.marketId);
-      //   });
-      //   setMarketIds(marketSetIdArr);
+      
       setUserSets(fetchedUserSets);
-      //   console.log(userSets);
+      
     };
     if (isFocused) {
       setError(null);

@@ -80,7 +80,6 @@ const SetSettingsScreen = ({ route, navigation }) => {
     navigation.goBack();
   };
   useLayoutEffect(() => {
-    // console.log("layout");
     navigation.setOptions({
       headerRight: ({ tintColor }) => {
         return (

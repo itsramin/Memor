@@ -135,33 +135,38 @@ const SetOverviewScreen = ({ route, navigation }) => {
   };
 
   const importHandler = async () => {
-    const res = await DocumentPicker.getDocumentAsync({
-      type: "text/comma-separated-values",
-    });
-    if (res.type === "cancel") return;
-
-    const data = await FileSystem.readAsStringAsync(res.uri);
-
-    const convertArr = data
-      .split(/\r?\n|\r|\n/g)
-      .filter((el) => el)
-      .map((item) => {
-        const cardItem = item.split(",");
-        return {
-          question: cardItem[0].replace(/"/g, ""),
-          answer: cardItem[1].replace(/"/g, ""),
-          setId,
-        };
+    try {
+      const res = await DocumentPicker.getDocumentAsync({
+        type: "text/comma-separated-values",
       });
+      if (res.type === "cancel") return;
 
-    if (convertArr.length > 0) {
-      convertArr.forEach(async (card) => {
-        await dbAddCard(card);
-      });
-      setLoadAgain((prev) => !prev);
-      Alert.alert("Great", "Import successfully done!");
-    } else {
-      Alert.alert("Error", "Something went wrong. Try again!");
+      const data = await FileSystem.readAsStringAsync(res.uri);
+      
+
+      const convertArr = data
+        .split(/\r?\n|\r|\n/g)
+        .filter((el) => el)
+        .map((item) => {
+          const cardItem = item.split(",");
+          return {
+            question: cardItem[0].replace(/"/g, ""),
+            answer: cardItem[1].replace(/"/g, ""),
+          };
+        });
+      
+
+      if (convertArr.length > 0) {
+        convertArr.forEach(async (card) => {
+          await dbAddCard(setId, card);
+        });
+        setLoadAgain((prev) => !prev);
+        Alert.alert("Great", "Import successfully done!");
+      } else {
+        Alert.alert("Error", "Something went wrong. Try again!");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -194,31 +199,31 @@ const SetOverviewScreen = ({ route, navigation }) => {
     }
   };
 
-  const fetch504Handler = async () => {
-    // console.log(cards);
-    const cards504 = cards.map((card) => {
-      return {
-        question: card.question,
-        answer: card.answer,
-        cardId: card.cardId,
-      };
-    });
+  // const fetch504Handler = async () => {
+    
+  //   const cards504 = cards.map((card) => {
+  //     return {
+  //       question: card.question,
+  //       answer: card.answer,
+  //       cardId: card.cardId,
+  //     };
+  //   });
 
-    const data = { name: "504 Words", cards: cards504 };
-    // console.log(data);
+  //   const data = { name: "504 Words", cards: cards504 };
+    
 
-    const res = await fetch(
-      "https://memor-7e6bf-default-rtdb.asia-southeast1.firebasedatabase.app/marketSets.json",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-    console.log(res);
-  };
+  //   const res = await fetch(
+  //     "https://memor-7e6bf-default-rtdb.asia-southeast1.firebasedatabase.app/marketSets.json",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     }
+  //   );
+  //   console.log(res);
+  // };
   return (
     <ScrollView>
       <SetInfo name={setName} cards={cards} />
@@ -268,11 +273,11 @@ const SetOverviewScreen = ({ route, navigation }) => {
           title="Settings"
           onPress={setSettingsHandler}
         />
-        <PrimaryButton
+        {/* <PrimaryButton
           icon="tune"
           title="fetch data"
           onPress={fetch504Handler}
-        />
+        /> */}
       </View>
     </ScrollView>
   );

@@ -376,7 +376,6 @@ export function dbFetchSetName(id) {
         `SELECT set_name FROM sets WHERE set_id = ?`,
         [id],
         (_, result) => {
-          // console.log(result.rows._array[0].set_name);
           resolve(result.rows._array[0].set_name);
         },
         (_, error) => {

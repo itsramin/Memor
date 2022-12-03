@@ -97,7 +97,7 @@ export default function App() {
             headerTintColor: "white",
             headerTitleStyle: "bold",
             contentStyle: { padding: 16 },
-            headerRight: () => <SettingIcon />,
+            // headerRight: () => <SettingIcon />,
           }}
         >
           <Stack.Screen
