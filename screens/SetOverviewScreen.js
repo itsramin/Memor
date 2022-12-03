@@ -142,7 +142,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
       if (res.type === "cancel") return;
 
       const data = await FileSystem.readAsStringAsync(res.uri);
-      
 
       const convertArr = data
         .split(/\r?\n|\r|\n/g)
@@ -154,7 +153,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
             answer: cardItem[1].replace(/"/g, ""),
           };
         });
-      
 
       if (convertArr.length > 0) {
         convertArr.forEach(async (card) => {
@@ -199,31 +197,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
     }
   };
 
-  // const fetch504Handler = async () => {
-    
-  //   const cards504 = cards.map((card) => {
-  //     return {
-  //       question: card.question,
-  //       answer: card.answer,
-  //       cardId: card.cardId,
-  //     };
-  //   });
-
-  //   const data = { name: "504 Words", cards: cards504 };
-    
-
-  //   const res = await fetch(
-  //     "https://memor-7e6bf-default-rtdb.asia-southeast1.firebasedatabase.app/marketSets.json",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(data),
-  //     }
-  //   );
-  //   console.log(res);
-  // };
   return (
     <ScrollView>
       <SetInfo name={setName} cards={cards} />
@@ -273,11 +246,6 @@ const SetOverviewScreen = ({ route, navigation }) => {
           title="Settings"
           onPress={setSettingsHandler}
         />
-        {/* <PrimaryButton
-          icon="tune"
-          title="fetch data"
-          onPress={fetch504Handler}
-        /> */}
       </View>
     </ScrollView>
   );
