@@ -8,22 +8,30 @@ import PrimaryButton from "../UI/PrimaryButton";
 const MarketSetItem = ({ set, userSets }) => {
   const navigation = useNavigation();
   const [insertId, setInsertId] = useState();
-  //   console.log(set.setId);
+  const [curLastMemorize, setCurLastMemorize] = useState();
 
   const userMarketIds = [];
   userSets.forEach((userSet) => {
     userMarketIds.push(userSet.marketId);
   });
   const [isExist, setIsExist] = useState(userMarketIds.includes(set.marketId));
-  //   const isExist = marketIds.includes(set.setId);
 
-  //   useEffect(() => {
-  //     // const marketIds= []
-  //   }, []);
+  useEffect(() => {
+    if (isExist) {
+      const targetSet = userSets.find(
+        (userSet) => userSet.marketId === set.marketId
+      );
+      if (!targetSet) return;
+
+      setInsertId(targetSet.setId);
+      setCurLastMemorize(targetSet.lastMemorize);
+    }
+  }, [isExist, userSets]);
   const addFormMarketHandler = async () => {
     const res = await dbNewSet(set.setName, set.marketId);
     setInsertId(res.insertId);
-
+    const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    setCurLastMemorize(yesterday);
     set.cards.forEach(async (card) => {
       await dbAddCard(res.insertId, card);
     });
@@ -37,13 +45,9 @@ const MarketSetItem = ({ set, userSets }) => {
     });
   };
   const openSetHandler = () => {
-    console.log(userSets);
-    console.log(insertId);
-    const targetSet = userSets.find((set) => set.setId === insertId);
-    // console.log(targetSet);
     navigation.navigate("SetOverviewScreen", {
       setId: insertId,
-      lastMemorize: targetSet.lastMemorize,
+      lastMemorize: curLastMemorize,
     });
   };
   return (
@@ -54,11 +58,6 @@ const MarketSetItem = ({ set, userSets }) => {
           <Text style={styles.description}>{set.description}</Text>
         </View>
 
-        {/* <PrimaryButton
-          title={"Add"}
-          onPress={addFormMarketHandler}
-          bgcolor={AllColors.primary400}
-        /> */}
         <PrimaryButton
           title={isExist ? "Open" : "Add"}
           onPress={isExist ? openSetHandler : addFormMarketHandler}
@@ -69,10 +68,6 @@ const MarketSetItem = ({ set, userSets }) => {
         <Text style={styles.cardsNumText}>cards: {set.cards.length}</Text>
       </View>
     </Pressable>
-    // <Pressable onPress={onPress} style={styles.view}>
-    //   <Text style={styles.title}>{set.setName}</Text>
-    //   <Text style={styles.description}>{set.description}</Text>
-    // </Pressable>
   );
 };
 

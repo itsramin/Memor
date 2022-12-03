@@ -24,8 +24,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2B4D9D"
       },
-      "package": "com.rgon299.firstapp",
-      "android.enableDangerousExperimentalLeanBuilds": true
+      "package": "com.rgon299.firstapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
