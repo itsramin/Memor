@@ -9,6 +9,7 @@ const CardItem = ({ question, answer, cardId, setId, index, stage }) => {
 
   const route = useRoute();
   const editable = route.params.editable;
+
   const pressCardHandler = () => {
     if (!editable) return;
     navigation.navigate("CardFormScreen", { cardId, question, answer, setId });

@@ -131,7 +131,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
   };
   const viewHandler = () => {
     if (!cardsValid) return;
-    navigation.navigate("CardListScreen", { setName, cards });
+    navigation.navigate("CardListScreen", { setName, cards, editable: true });
   };
 
   const importHandler = async () => {

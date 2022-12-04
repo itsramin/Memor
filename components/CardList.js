@@ -1,6 +1,5 @@
-// import { memo } from "react";
-import { FlatList, StyleSheet } from "react-native";
-import { AllColors } from "../UI/AllColors";
+
+import { FlatList } from "react-native";
 import CardItem from "./CardItem";
 
 const CardList = ({ cards }) => {
@@ -27,7 +26,4 @@ const CardList = ({ cards }) => {
 };
 
 export default CardList;
-const styles = StyleSheet.create({
-  screen: { flex: 1, alignItems: "center", justifyContent: "center" },
-  text: { fontSize: 20, color: AllColors.primary400 },
-});
+

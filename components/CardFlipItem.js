@@ -12,9 +12,6 @@ const CardFlipItem = ({ card }) => {
       <Text style={styles.text}>
         {answerVisible ? card.answer : card.question}
       </Text>
-      {/* <Text>
-        {card.cardId} - {card.stage}
-      </Text> */}
     </Pressable>
   );
 };
