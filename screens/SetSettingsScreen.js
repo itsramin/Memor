@@ -13,6 +13,10 @@ import {
   dbDeleteSetAllCards,
   dbFetchSetSettings,
   dbUpdateSetDailyCount,
+  dbStageReset,
+  dbUpdateTodayDone,
+  dbResetMemorizeStatus,
+  dbUpdateLastMemorize,
 } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
@@ -49,7 +53,7 @@ const SetSettingsScreen = ({ route, navigation }) => {
   };
   const deleteSetHandler = () => {
     Alert.alert(
-      "Delete Set",
+      "Warning",
       "Are you sure you want to delete this flashcard set?",
       [
         { text: "No" },
@@ -78,6 +82,32 @@ const SetSettingsScreen = ({ route, navigation }) => {
     await dbUpdateSetName({ newName, setId });
     await dbUpdateSetDailyCount({ dailyCount, setId });
     navigation.goBack();
+  };
+
+  const resetStages = async () => {
+    Alert.alert(
+      "Warning",
+      "Are you sure you want to reset levels? All levels will change to base level.",
+      [
+        { text: "No" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            const yesterday = new Date(Date.now() - 864e5)
+              .toISOString()
+              .slice(0, 10);
+            await dbStageReset(setId);
+            await dbUpdateTodayDone(setId, 0);
+            await dbResetMemorizeStatus(setId);
+            await dbUpdateLastMemorize({
+              date: yesterday,
+              setId,
+            });
+            navigation.navigate("HomePage");
+          },
+        },
+      ]
+    );
   };
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -118,6 +148,12 @@ const SetSettingsScreen = ({ route, navigation }) => {
         />
       </View>
       <View style={styles.actions}>
+        <PrimaryButton
+          icon="repeat"
+          title="Reset levels"
+          bgcolor={AllColors.red400}
+          onPress={resetStages}
+        />
         <PrimaryButton
           icon="delete"
           title="Delete set"

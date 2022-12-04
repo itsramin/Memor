@@ -248,7 +248,7 @@ export function dbStageUpAll(setId) {
   const promise = new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "UPDATE cards SET stage = stage + 1 WHERE set_id = ? AND stage NOT IN (0,1, 3, 7, 15, 30)",
+        "UPDATE cards SET stage = stage + 1 WHERE set_id = ? AND stage NOT IN (0,1, 3, 7, 15, 30,31)",
         [setId],
         (_, result) => {
           resolve(result);
@@ -268,6 +268,24 @@ export function dbStageDown(cardId) {
       tx.executeSql(
         "UPDATE cards SET stage = 1 WHERE card_id = ?",
         [cardId],
+        (_, result) => {
+          resolve(result);
+        },
+        (_, error) => {
+          reject(error);
+        }
+      );
+    });
+  });
+
+  return promise;
+}
+export function dbStageReset(id) {
+  const promise = new Promise((resolve, reject) => {
+    database.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE cards SET stage = 0 WHERE set_id = ? ",
+        [id],
         (_, result) => {
           resolve(result);
         },
@@ -583,3 +601,5 @@ export function dbFetchTodayCards(id) {
 
   return promise;
 }
+
+
