@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
 import { AllColors } from "../UI/AllColors";
-
+import { MaterialIcons } from "@expo/vector-icons";
 const CardFlipItem = ({ card }) => {
   const [answerVisible, setAnswerVisible] = useState(false);
   const showAnswerHandler = () => {
@@ -12,6 +12,12 @@ const CardFlipItem = ({ card }) => {
       <Text style={styles.text}>
         {answerVisible ? card.answer : card.question}
       </Text>
+      <MaterialIcons
+        name="touch-app"
+        color={AllColors.primary300}
+        size={30}
+        style={styles.icon}
+      />
     </Pressable>
   );
 };
@@ -29,8 +35,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   text: {
-    color: AllColors.primary500,
+    color: AllColors.primary400,
     textAlign: "center",
     fontSize: 24,
+  },
+  icon: {
+    position: "absolute",
+    bottom: 10,
+    right: 7,
   },
 });
