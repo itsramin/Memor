@@ -1,14 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, TextInput } from "react-native";
 import { AllColors } from "../UI/AllColors";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const SearchCard = ({ cards, onFilterCards, blur }) => {
+const SearchCard = ({ cards, onFilterCards }) => {
   const [searchWord, setSearchWord] = useState("");
-  const searchRef = useRef();
-  useEffect(() => {
-    searchRef.current.blur();
-  }, [blur, searchRef]);
+
   useEffect(() => {
     const filteredCards = cards.filter(
       (card) =>
@@ -28,7 +25,6 @@ const SearchCard = ({ cards, onFilterCards, blur }) => {
       <TextInput
         style={styles.searchText}
         value={searchWord}
-        ref={searchRef}
         onChangeText={(value) => setSearchWord(value)}
       />
     </View>

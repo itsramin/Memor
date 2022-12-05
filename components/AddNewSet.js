@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { dbNewSet } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
 
-const AddNewSet = ({ blur }) => {
+const AddNewSet = ({}) => {
   const nameRef = useRef();
   const [setName, setSetName] = useState("");
   const [nameInvalid, setNameInvalid] = useState(false);
@@ -24,9 +24,6 @@ const AddNewSet = ({ blur }) => {
     setSetName("");
   };
 
-  useEffect(() => {
-    nameRef.current.blur();
-  }, [blur, nameRef]);
   return (
     <View style={styles.container}>
       <TextInput

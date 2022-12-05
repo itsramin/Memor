@@ -5,6 +5,7 @@ import {
   FlatList,
   Text,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import AddNewSet from "../components/AddNewSet";
 import SetItem from "../components/SetItem";
@@ -14,7 +15,6 @@ import { AllColors } from "../UI/AllColors";
 
 const HomeScreen = ({ navigation }) => {
   const [setsList, setSetsList] = useState([]);
-  const [blur, setBlur] = useState(false);
 
   useEffect(() => {
     const fetchHandler = async () => {
@@ -44,10 +44,6 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const blurHandler = () => {
-    setBlur((prev) => !prev);
-  };
-
   let content = <Text style={styles.noSetText}>No set</Text>;
 
   if (setsList.length > 0) {
@@ -60,9 +56,9 @@ const HomeScreen = ({ navigation }) => {
     );
   }
   return (
-    <TouchableWithoutFeedback onPress={blurHandler}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.screen}>
-        <AddNewSet blur={blur} />
+        <AddNewSet />
         <View style={styles.allSetBox}>
           <Text style={styles.allSetTitle}>Your Sets</Text>
           {content}

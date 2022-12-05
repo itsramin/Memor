@@ -1,11 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { StatusBar, Text } from "react-native";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AllColors } from "./UI/AllColors";
 
-import SettingIcon from "./UI/SettingIcon";
 import * as SplashScreen from "expo-splash-screen";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useCallback, useEffect, useState } from "react";
@@ -141,4 +140,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create();
