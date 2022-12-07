@@ -1,12 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
 import { AllColors } from "../UI/AllColors";
 import { MaterialIcons } from "@expo/vector-icons";
-const CardFlipItem = ({ card }) => {
-  const [answerVisible, setAnswerVisible] = useState(false);
+const CardFlipItem = ({ card, status }) => {
+  const [answerVisible, setAnswerVisible] = useState(status);
+  useEffect(() => {
+    setAnswerVisible(false);
+  }, [status]);
+
   const showAnswerHandler = () => {
     setAnswerVisible((prev) => !prev);
   };
+
   return (
     <Pressable style={styles.qaView} onPress={showAnswerHandler}>
       <Text style={styles.text}>

@@ -17,6 +17,7 @@ const MemorizeCards = ({ cards, setId }) => {
   const [curNum, setCurNum] = useState(0);
   const [correctNum, setCorrectNum] = useState(0);
   const [wrongNum, setWrongNum] = useState(0);
+  const [reload, setReload] = useState(false);
 
   const progress = (curNum + 1) / cardsCount;
   const responseHandler = async (status) => {
@@ -46,6 +47,7 @@ const MemorizeCards = ({ cards, setId }) => {
     }
 
     setCurNum((prev) => prev + 1);
+    setReload((prev) => !prev);
   };
 
   return (
@@ -57,7 +59,7 @@ const MemorizeCards = ({ cards, setId }) => {
         </Text>
       </View>
       <View>
-        <CardFlipItem card={cards[curNum]} />
+        <CardFlipItem card={cards[curNum]} status={reload} />
       </View>
       <View style={styles.actions}>
         <IconButton
