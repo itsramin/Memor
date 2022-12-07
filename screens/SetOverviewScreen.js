@@ -155,7 +155,10 @@ const SetOverviewScreen = ({ route, navigation }) => {
         });
 
       if (convertArr.length > 0) {
-        convertArr.forEach(async (card) => {
+        const filteredArr = convertArr.filter(
+          (card) => card.question.trim().length > 0
+        );
+        filteredArr.forEach(async (card) => {
           await dbAddCard(setId, card);
         });
         setLoadAgain((prev) => !prev);
