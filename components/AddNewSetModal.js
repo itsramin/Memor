@@ -51,6 +51,7 @@ const AddNewSetModal = () => {
               onChangeText={nameChangeHandler}
               value={setName}
               ref={nameRef}
+              autoCapitalize="none"
               placeholder="Enter a name"
             />
             <PrimaryButton

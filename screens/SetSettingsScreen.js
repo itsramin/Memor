@@ -131,6 +131,7 @@ const SetSettingsScreen = ({ route, navigation }) => {
           value={newName}
           onChangeText={nameChangeHandler}
           style={styles.input}
+          autoCapitalize="none"
         />
       </View>
       <View style={styles.control}>

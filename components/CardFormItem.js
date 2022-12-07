@@ -75,6 +75,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
           onChangeText={questionChangeHandler}
           style={styles.input}
           multiline
+          autoCapitalize="none"
           numberOfLines={4}
           ref={questionRef}
         />
@@ -89,6 +90,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
           onChangeText={answerChangeHandler}
           style={styles.input}
           multiline
+          autoCapitalize="none"
           numberOfLines={4}
           ref={answerRef}
         />

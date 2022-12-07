@@ -25,6 +25,7 @@ const SearchCard = ({ cards, onFilterCards }) => {
       <TextInput
         style={styles.searchText}
         value={searchWord}
+        autoCapitalize="none"
         onChangeText={(value) => setSearchWord(value)}
       />
     </View>
