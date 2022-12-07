@@ -32,6 +32,7 @@ const AddNewSet = ({}) => {
         value={setName}
         ref={nameRef}
         placeholder="Enter a name"
+        autoFocus={true}
       />
       <PrimaryButton
         title="Add new set"
@@ -45,13 +46,13 @@ const AddNewSet = ({}) => {
 export default AddNewSet;
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
   },
   input: {
-    flex: 1,
+    // flex: 1,
     marginRight: 10,
     paddingVertical: 4,
     paddingHorizontal: 6,
@@ -59,6 +60,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: AllColors.primary400,
     fontSize: 16,
+    marginBottom: 10,
+    width: "80%",
   },
   nameInvalid: {
     borderBottomWidth: 2,

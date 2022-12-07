@@ -7,7 +7,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import AddNewSet from "../components/AddNewSet";
+
+import AddNewSetModal from "../components/AddNewSetModal";
 import SetItem from "../components/SetItem";
 import { dbFetchAllsets } from "../store/database";
 
@@ -58,7 +59,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.screen}>
-        <AddNewSet />
+        <AddNewSetModal />
         <View style={styles.allSetBox}>
           <Text style={styles.allSetTitle}>Your Sets</Text>
           {content}
