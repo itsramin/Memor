@@ -97,7 +97,7 @@ const CardFormItem = ({ setId, cardId, answer, question }) => {
       <View style={styles.actions}>
         {!cardId && (
           <PrimaryButton
-            title="Save & Stay"
+            title="Add & Stay"
             onPress={saveCardHandler.bind(this, "stay")}
           />
         )}

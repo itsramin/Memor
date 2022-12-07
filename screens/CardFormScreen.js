@@ -14,7 +14,10 @@ const CardFormScreen = ({ route, navigation }) => {
         text: "Yes",
         onPress: async () => {
           await dbDeleteCard(cardId);
-          navigation.goBack();
+          navigation.navigate("CardListScreen", {
+            deletedCard: cardId,
+            editable: true,
+          });
         },
       },
     ]);
