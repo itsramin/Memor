@@ -9,6 +9,7 @@ const MarketSetItem = ({ set, userSets }) => {
   const navigation = useNavigation();
   const [insertId, setInsertId] = useState();
   const [curLastMemorize, setCurLastMemorize] = useState();
+  const [loading, setLoading] = useState(false);
 
   const userMarketIds = [];
   userSets.forEach((userSet) => {
@@ -28,14 +29,21 @@ const MarketSetItem = ({ set, userSets }) => {
     }
   }, [isExist, userSets]);
   const addFormMarketHandler = async () => {
-    const res = await dbNewSet(set.setName, set.marketId);
-    setInsertId(res.insertId);
-    const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
-    setCurLastMemorize(yesterday);
-    set.cards.forEach(async (card) => {
-      await dbAddCard(res.insertId, card);
-    });
-    setIsExist(true);
+    setLoading(true);
+    try {
+      const res = await dbNewSet(set.setName, set.marketId);
+      setInsertId(res.insertId);
+      const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+      setCurLastMemorize(yesterday);
+      set.cards.forEach(async (card) => {
+        await dbAddCard(res.insertId, card);
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      setIsExist(true);
+    }
   };
   const viewCardshandler = () => {
     navigation.navigate("CardListScreen", {
@@ -59,7 +67,7 @@ const MarketSetItem = ({ set, userSets }) => {
         </View>
 
         <PrimaryButton
-          title={isExist ? "Open" : "Add"}
+          title={loading ? "loading..." : isExist ? "Open" : "Add"}
           onPress={isExist ? openSetHandler : addFormMarketHandler}
           bgcolor={isExist ? AllColors.green400 : AllColors.primary400}
         />
