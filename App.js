@@ -16,6 +16,8 @@ import SetSettingsScreen from "./screens/SetSettingsScreen";
 import MemorizeScreen from "./screens/MemorizeScreen";
 import MemorzieSummary from "./screens/MemorizeSummary";
 import MarketScreen from "./screens/MarketScreen";
+import InfoScreen from "./screens/InfoScreen";
+import InfoIcon from "./UI/InfoIcon";
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -102,7 +104,11 @@ export default function App() {
           <Stack.Screen
             name="HomePage"
             component={HomePage}
-            options={{ contentStyle: { padding: 0 }, title: "Memor" }}
+            options={{
+              contentStyle: { padding: 0 },
+              title: "Memor",
+              headerRight: () => <InfoIcon />,
+            }}
           />
           <Stack.Screen
             name="SetOverviewScreen"
@@ -134,9 +140,13 @@ export default function App() {
             component={MemorzieSummary}
             options={{ title: "Summary" }}
           />
+          <Stack.Screen
+            name="InfoScreen"
+            component={InfoScreen}
+            options={{ title: "Info" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>
   );
 }
-

@@ -215,7 +215,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
         />
 
         <PrimaryButton
-          icon="wb-sunny"
+          icon="play-arrow"
           onPress={MemorizeHandler}
           title="Memorize"
           bgcolor={

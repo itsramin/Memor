@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Memor",
-    "slug": "Memor",
+    "slug": "first-app",
     "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
