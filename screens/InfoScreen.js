@@ -21,9 +21,9 @@ const InfoScreen = () => {
           <Text style={styles.title}>Memorize</Text>
         </View>
         <Text style={styles.text}>
-          Each time you start, the app shows you some cards. If you remember it,
-          it will be asked you 2 days later but if you don't remember, it will
-          be asked you tommorrow.
+          Each time you start, the app shows you some cards. If you remember, it
+          will be asked you 2 days later but if you don't remember, it will be
+          asked you tommorrow.
         </Text>
       </View>
       <View style={styles.box}>
@@ -61,7 +61,7 @@ const InfoScreen = () => {
           <Text style={styles.title}>Market</Text>
         </View>
         <Text style={styles.text}>
-          You can find some online flashcards hear and add it to your sets.
+          You can find some online flashcards here and add it to your sets.
         </Text>
       </View>
     </ScrollView>

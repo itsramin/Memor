@@ -52,10 +52,10 @@ const AddNewSetModal = () => {
               value={setName}
               ref={nameRef}
               autoCapitalize="none"
-              placeholder="Enter a name"
+              placeholder="Set name"
             />
             <PrimaryButton
-              title="Save"
+              title="Create"
               icon="check"
               onPress={addNewSetHandler}
             />

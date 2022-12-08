@@ -1,21 +1,119 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { getLevel } from "../helper/helper";
-
+import { MaterialIcons } from "@expo/vector-icons";
 import { AllColors } from "../UI/AllColors";
 
-const CardItem = ({ question, answer, cardId, setId, index, stage }) => {
+const CardItem = ({
+  question,
+  answer,
+  cardId,
+  setId,
+  index,
+  stage,
+  multiSelectActive,
+  onToggleMultiSelect,
+  onAddToDeleteArr,
+  onDeleteCards,
+  onCleanCard,
+  onCleanArr,
+}) => {
   const navigation = useNavigation();
+  const [selected, setSelected] = useState();
+
+  useEffect(() => {
+    setSelected(false);
+  }, [multiSelectActive]);
 
   const route = useRoute();
   const editable = route.params.editable;
+  const multiSelectClose = () => {
+    onCleanArr();
+    onToggleMultiSelect();
+  };
+  const deleteSelectedCards = () => {
+    onDeleteCards();
+    onCleanArr();
+    onToggleMultiSelect();
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: ({ tintColor }) => {
+        if (multiSelectActive) {
+          return (
+            <>
+              <MaterialIcons
+                name="close"
+                color={tintColor}
+                size={24}
+                style={styles.iconBtn}
+                onPress={multiSelectClose}
+              />
+              <MaterialIcons
+                name="delete"
+                color={tintColor}
+                size={24}
+                style={styles.iconBtn}
+                onPress={deleteSelectedCards}
+              />
+            </>
+          );
+        }
+      },
+    });
+  }, [multiSelectActive, navigation, multiSelectClose, deleteSelectedCards]);
 
   const pressCardHandler = () => {
     if (!editable) return;
-    navigation.navigate("CardFormScreen", { cardId, question, answer, setId });
+
+    if (multiSelectActive) {
+      if (!selected) {
+        onAddToDeleteArr(cardId);
+      } else {
+        onCleanCard(cardId);
+      }
+      setSelected((prev) => !prev);
+    } else {
+      navigation.navigate("CardFormScreen", {
+        cardId,
+        question,
+        answer,
+        setId,
+      });
+    }
+  };
+
+  const longPressHandler = () => {
+    if (!editable) return;
+    // setSelected(false);
+    onToggleMultiSelect();
   };
   return (
-    <Pressable style={styles.outer} onPress={pressCardHandler}>
+    <Pressable
+      style={styles.outer}
+      onPress={pressCardHandler}
+      onLongPress={longPressHandler}
+    >
+      {multiSelectActive && (
+        <View
+          style={[
+            styles.selectView,
+            {
+              backgroundColor: selected
+                ? AllColors.primary400
+                : AllColors.grey100,
+            },
+          ]}
+        >
+          <MaterialIcons
+            name={selected ? "check-box" : "check-box-outline-blank"}
+            size={20}
+            color={selected ? AllColors.primary100 : AllColors.primary400}
+          />
+        </View>
+      )}
       <View style={styles.card}>
         <View style={styles.question}>
           <Text style={styles.text}>{question}</Text>
@@ -79,5 +177,13 @@ const styles = StyleSheet.create({
   stageLabel: {
     fontSize: 12,
     color: AllColors.primary400,
+  },
+  selectView: {
+    alignItems: "center",
+    justifyContent: "space-around",
+    minWidth: 50,
+  },
+  iconBtn: {
+    marginLeft: 25,
   },
 });
