@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -13,7 +13,6 @@ import PrimaryButton from "../UI/PrimaryButton";
 
 const AddNewSetModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
-
   const nameRef = useRef();
   const [setName, setSetName] = useState("");
   const [nameInvalid, setNameInvalid] = useState(false);
@@ -47,7 +46,11 @@ const AddNewSetModal = () => {
         animationType="fade"
         transparent={true}
         onRequestClose={hideModel}
-        onShow={() => nameRef.current.focus()}
+        onShow={() => {
+          setTimeout(() => {
+            nameRef.current.focus();
+          }, 100);
+        }}
         statusBarTranslucent={true}
       >
         <KeyboardAvoidingView behavior="padding" style={styles.avoid}>
@@ -61,7 +64,6 @@ const AddNewSetModal = () => {
                   ref={nameRef}
                   autoCapitalize="none"
                   placeholder="Set name"
-                  autoFocus={true}
                 />
                 <PrimaryButton
                   title="Create"
@@ -85,24 +87,19 @@ export default AddNewSetModal;
 const styles = StyleSheet.create({
   avoid: {
     flex: 1,
-
-    backgroundColor: " rgba(0, 0, 0, 0.5)",
+    backgroundColor: " rgba(0, 0, 0, 0.7)",
   },
   grey: {
-    // opacity: 0.6,
     flex: 1,
     flexDirection: "column",
-    // alignItems: "flex-end",
     justifyContent: "flex-end",
   },
   modalView: {
     padding: 24,
-    // flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     backgroundColor: "white",
     width: "100%",
-    // paddingBottom: 200,
   },
   container: {
     flexDirection: "column",
