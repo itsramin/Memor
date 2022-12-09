@@ -1,5 +1,12 @@
 import { useRef, useState } from "react";
-import { Modal, StyleSheet, View, Pressable, TextInput } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  View,
+  Pressable,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
 import { dbNewSet } from "../store/database";
 import { AllColors } from "../UI/AllColors";
 import PrimaryButton from "../UI/PrimaryButton";
@@ -37,30 +44,34 @@ const AddNewSetModal = () => {
     <>
       <Modal
         visible={modalVisible}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={hideModel}
         onShow={() => nameRef.current.focus()}
+        statusBarTranslucent={true}
       >
-        <Pressable style={styles.grey} onPress={hideModel} />
-
-        <View style={styles.modalView}>
-          <View style={styles.container}>
-            <TextInput
-              style={[styles.input, nameInvalid && styles.nameInvalid]}
-              onChangeText={nameChangeHandler}
-              value={setName}
-              ref={nameRef}
-              autoCapitalize="none"
-              placeholder="Set name"
-            />
-            <PrimaryButton
-              title="Create"
-              icon="check"
-              onPress={addNewSetHandler}
-            />
-          </View>
-        </View>
+        <KeyboardAvoidingView behavior="padding" style={styles.avoid}>
+          <Pressable style={styles.grey} onPress={hideModel}>
+            <View style={styles.modalView}>
+              <View style={styles.container}>
+                <TextInput
+                  style={[styles.input, nameInvalid && styles.nameInvalid]}
+                  onChangeText={nameChangeHandler}
+                  value={setName}
+                  ref={nameRef}
+                  autoCapitalize="none"
+                  placeholder="Set name"
+                  autoFocus={true}
+                />
+                <PrimaryButton
+                  title="Create"
+                  icon="check"
+                  onPress={addNewSetHandler}
+                />
+              </View>
+            </View>
+          </Pressable>
+        </KeyboardAvoidingView>
       </Modal>
 
       <View style={styles.addBtn}>
@@ -72,17 +83,26 @@ const AddNewSetModal = () => {
 
 export default AddNewSetModal;
 const styles = StyleSheet.create({
+  avoid: {
+    flex: 1,
+
+    backgroundColor: " rgba(0, 0, 0, 0.5)",
+  },
   grey: {
-    backgroundColor: "black",
-    opacity: 0.6,
-    flex: 2,
+    // opacity: 0.6,
+    flex: 1,
+    flexDirection: "column",
+    // alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
   modalView: {
     padding: 24,
-    flex: 1,
+    // flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     backgroundColor: "white",
+    width: "100%",
+    // paddingBottom: 200,
   },
   container: {
     flexDirection: "column",
