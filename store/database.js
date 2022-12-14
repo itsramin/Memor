@@ -430,18 +430,18 @@ export function dbFetchAllCards(id) {
         `SELECT * FROM cards WHERE set_id = ?`,
         [id],
         (_, result) => {
-          const cards = [];
 
-          for (const dp of result.rows._array) {
-            cards.push({
-              cardId: dp.card_id,
-              question: dp.question,
-              answer: dp.answer,
-              setId: dp.set_id,
-              stage: dp.stage,
-              memorizeStatus: dp.memorize_status,
-            });
-          }
+          const cards = result.rows._array.map((item, i) => {
+            return {
+              cardId: item.card_id,
+              question: item.question,
+              answer: item.answer,
+              setId: item.set_id,
+              stage: item.stage,
+              memorizeStatus: item.memorize_status,
+              indexNum: i + 1,
+            };
+          });
 
           resolve(cards);
         },
@@ -601,5 +601,3 @@ export function dbFetchTodayCards(id) {
 
   return promise;
 }
-
-

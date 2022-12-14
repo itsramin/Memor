@@ -16,7 +16,6 @@ const CardList = ({ cards }) => {
   const renderItemHandler = (itemData) => {
     const changeMultiSelectHandler = () => {
       setMultiselectActive((prev) => !prev);
-      // setIsSelected(() => false);
     };
     const addToDeleteArrHandler = (cardId) => {
       setDeletedArr((prev) => [...prev, cardId]);
@@ -55,7 +54,7 @@ const CardList = ({ cards }) => {
         cardId={itemData.item.cardId}
         setId={itemData.item.setId}
         stage={itemData.item.stage}
-        index={itemData.index + 1}
+        index={itemData.item.indexNum}
         multiSelectActive={multiSelectActive}
         onToggleMultiSelect={changeMultiSelectHandler}
         onAddToDeleteArr={addToDeleteArrHandler}

@@ -177,9 +177,13 @@ const SetOverviewScreen = ({ route, navigation }) => {
     });
 
     const CSV = jsonToCSV(data).slice(jsonToCSV(data).indexOf("\n") + 1);
+    const downloadDir =
+      FileSystem.StorageAccessFramework.getUriForDirectoryInRoot("Download");
 
     const permissions =
-      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync(
+        downloadDir
+      );
     if (!permissions.granted) {
       return;
     }
