@@ -172,6 +172,7 @@ const SetOverviewScreen = ({ route, navigation }) => {
   };
 
   const exportHandler = async () => {
+    if (!cardsValid) return;
     const data = cards.map((card) => {
       return { question: card.question, answer: card.answer };
     });
